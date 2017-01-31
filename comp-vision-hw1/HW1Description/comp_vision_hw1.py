@@ -1,9 +1,7 @@
 # Brian McIlwain
 # Computer Vision
 # Homework 1
-
 import cv2
-from matplotlib import pyplot as plt
 
 # Problem 1: Write a function, called myHEQ_RGB(img), to apply histogram equalization directly on a color image.
 def myHEQ_RGB(img):
@@ -53,9 +51,11 @@ def myHEQ_ROI(img):
     cv2.imshow('HEQ_ROI', img)
     return newImg
 
+# Test your Step 1 and 2 using two under exposed images. And test your Step 3 program using the NikonContest2016Winner and portrait images.
 img = cv2.imread('HW1Description/TestImages/Castle_badexposure.jpg')
 cv2.imshow('DEFAULT', img)
 
+# Save your enhanced images to “HEQ_RGB.png”, “HEQ_YCRCB.png”, and “HEQ_ROI.png” respectively
 cv2.imwrite('HW1Description/HEQ_RGB.png', myHEQ_RGB(img))
 cv2.imwrite('HW1Description/HEQ_YCRCB.png', myHEQ_YCRCB(img))
 cv2.imwrite('HW1Description/HEQ_ROI.png', myHEQ_ROI(img))
