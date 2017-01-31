@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>9c07c365-3bd8-4c8b-802f-b3fd8a05f5c5</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>comp_vision_hw1.py</StartupFile>
+    <StartupFile>HW1Description\comp_vision_hw1.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,7 +22,23 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="comp_vision_hw1.py" />
+    <Compile Include="HW1Description\comp_vision_hw1.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HW1Description\" />
+    <Folder Include="HW1Description\ExampleResults\" />
+    <Folder Include="HW1Description\TestImages\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="HW1Description\ExampleResults\HEQ_RGB.png" />
+    <Content Include="HW1Description\ExampleResults\HEQ_ROI.png" />
+    <Content Include="HW1Description\ExampleResults\HEQ_YCrCB.png" />
+    <Content Include="HW1Description\HW1.pdf" />
+    <Content Include="HW1Description\TestImages\Castle_badexposure.jpg" />
+    <Content Include="HW1Description\TestImages\NikonContest2016Winner.png" />
+    <Content Include="HW1Description\TestImages\portrait.bmp" />
+    <Content Include="HW1Description\TestImages\UnderExposedPortrait.jpg" />
+    <Content Include="HW1Description\TestImages\UnderExposedScene.jpg" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
