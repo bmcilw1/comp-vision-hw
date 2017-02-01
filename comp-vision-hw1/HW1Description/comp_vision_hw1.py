@@ -23,16 +23,16 @@ def myHEQ_RGB(img):
 # Problem 2: Write a function, called myHEQ_YCRCB(img), to apply histogram equalization on the Y channel of a color image.
 def myHEQ_YCRCB(img):
     # Part 1: Convert the RGB representation to YCrCb representation;
-    img_YCrCb = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
+    img_YCrCb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
     # Part 2: Apply equalization on the Y channel;
     yImg,crImg,cbImg = cv2.split(img)
     yEqu = cv2.equalizeHist(yImg)
 
     # Part 3: Merge the new Y channel with the other two channels;
-    newImg = cv2.merge([yEqu, crImg, cbImg])
+    newImgYCrCb = cv2.merge([yEqu, crImg, cbImg])
 
     # Part 4: Convert the image back to RGB mode.
-    newImg = cv2.cvtColor(img_YCrCb, cv2.COLOR_YCrCb2RGB)
+    newImg = cv2.cvtColor(newImgYCrCb, cv2.COLOR_YCrCb2BGR)
 
     # Part 5: Show the result in a window named “HEQ_YCRCB”
     cv2.imshow('HEQ_YCRCB', newImg)
