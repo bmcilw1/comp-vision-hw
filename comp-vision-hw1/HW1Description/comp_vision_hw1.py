@@ -25,7 +25,7 @@ def myHEQ_YCRCB(img):
     # Part 1: Convert the RGB representation to YCrCb representation;
     img_YCrCb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
     # Part 2: Apply equalization on the Y channel;
-    yImg,crImg,cbImg = cv2.split(img)
+    yImg,crImg,cbImg = cv2.split(img_YCrCb)
     yEqu = cv2.equalizeHist(yImg)
 
     # Part 3: Merge the new Y channel with the other two channels;
