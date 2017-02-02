@@ -59,7 +59,7 @@ def myHEQ_ROI(img):
     imgName = 'ROI_SELECT'
     cv2.imshow(imgName, img)
     cv2.setMouseCallback(imgName, mouseFunc)
-    global SelectROI
+    global SelectROI, refPt
     SelectROI = 1
 
     while SelectROI != 3:
@@ -70,10 +70,10 @@ def myHEQ_ROI(img):
     newImgROI = myHEQ_YCRCB(ROI_ONLY)
 
     # Part 3: Update the ROI in the image using this new enhanced patch
-    newImg = newImgROI
+    img[refPt[0][1]:refPt[1][1],refPt[0][0]:refPt[1][0]] = newImgROI
 
     # Part 5: Show the final result in a window named “HEQ_ROI”
-    return newImg
+    return img
 
 # Test your Step 1 and 2 using two under exposed images. And test your Step 3 program using the NikonContest2016Winner and portrait images.
 # Save your enhanced images to “HEQ_RGB.png”, “HEQ_YCRCB.png”, and “HEQ_ROI.png” respectively
