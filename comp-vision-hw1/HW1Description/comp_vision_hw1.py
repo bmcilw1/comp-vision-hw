@@ -92,6 +92,7 @@ ROI = myHEQ_ROI(img)
 cv2.imshow('HEQ_ROI', ROI)
 cv2.imwrite('HW1Description/HEQ_ROI.png', ROI)
 
+print 'press any key to continue...'
 cv2.waitKey(0)
 
 cv2.destroyAllWindows()
