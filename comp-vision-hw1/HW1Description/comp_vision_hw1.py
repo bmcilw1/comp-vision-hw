@@ -18,7 +18,6 @@ def mouseFunc(event, x, y, flags, param):
         SelectROI = 3
         global ROI_ONLY
         ROI_ONLY = myHEQ_YCRCB(img[refPt[0][1]:refPt[1][1],refPt[0][0]:refPt[1][0]])
-        cv2.imshow('ROI', ROI_ONLY)
 
 # Problem 1: Write a function, called myHEQ_RGB(img), to apply histogram equalization directly on a color image.
 def myHEQ_RGB(img):
@@ -57,7 +56,8 @@ def myHEQ_YCRCB(img):
 def myHEQ_ROI(img):
     # Part 1: Implement a mouse-event handling function to allow user to select a rectangular region of Interest (ROI) in the image.
     imgName = 'ROI_SELECT'
-    cv2.imshow(imgName, img)
+    imgCopy = img.copy()
+    cv2.imshow(imgName, imgCopy)
     cv2.setMouseCallback(imgName, mouseFunc)
     global SelectROI, refPt
     SelectROI = 1
@@ -70,10 +70,10 @@ def myHEQ_ROI(img):
     newImgROI = myHEQ_YCRCB(ROI_ONLY)
 
     # Part 3: Update the ROI in the image using this new enhanced patch
-    img[refPt[0][1]:refPt[1][1],refPt[0][0]:refPt[1][0]] = newImgROI
+    imgCopy[refPt[0][1]:refPt[1][1],refPt[0][0]:refPt[1][0]] = newImgROI
 
     # Part 5: Show the final result in a window named “HEQ_ROI”
-    return img
+    return imgCopy
 
 # Test your Step 1 and 2 using two under exposed images. And test your Step 3 program using the NikonContest2016Winner and portrait images.
 # Save your enhanced images to “HEQ_RGB.png”, “HEQ_YCRCB.png”, and “HEQ_ROI.png” respectively
@@ -91,5 +91,7 @@ cv2.imwrite('HW1Description/HEQ_YCRCB.png', YCRCB)
 ROI = myHEQ_ROI(img)
 cv2.imshow('HEQ_ROI', ROI)
 cv2.imwrite('HW1Description/HEQ_ROI.png', ROI)
+
+cv2.waitKey(0)
 
 cv2.destroyAllWindows()
