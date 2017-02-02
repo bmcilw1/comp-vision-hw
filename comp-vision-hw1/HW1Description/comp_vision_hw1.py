@@ -61,11 +61,11 @@ def myHEQ_ROI(img):
     cv2.setMouseCallback(imgName, mouseFunc)
     global SelectROI, refPt
     SelectROI = 1
+    print 'Press any key after selecting ROI in ROI_SELECT'
 
-    while SelectROI != 3:
-        cv2.waitKey(0)
+    cv2.waitKey(0)
+    cv2.destroyWindow(imgName)
 
-    print 'SelectROI == 3'
     # Part 2: Use “myHEQ_YCRCB()” to equalize the ROI region and get an enhanced patch
     newImgROI = myHEQ_YCRCB(ROI_ONLY)
 
