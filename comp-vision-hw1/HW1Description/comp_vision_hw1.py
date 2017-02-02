@@ -88,6 +88,7 @@ YCRCB = myHEQ_YCRCB(img)
 cv2.imshow('HEQ_YCRCB', YCRCB)
 cv2.imwrite('HW1Description/HEQ_YCRCB.png', YCRCB)
 
+img = cv2.imread('HW1Description/TestImages/NikonContest2016Winner.png')
 ROI = myHEQ_ROI(img)
 cv2.imshow('HEQ_ROI', ROI)
 cv2.imwrite('HW1Description/HEQ_ROI.png', ROI)
