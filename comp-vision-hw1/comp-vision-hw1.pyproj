@@ -34,6 +34,7 @@
     <Content Include="HW1Description\ExampleResults\HEQ_ROI.png" />
     <Content Include="HW1Description\ExampleResults\HEQ_YCrCB.png" />
     <Content Include="HW1Description\HW1.pdf" />
+    <Content Include="HW1Description\README.txt" />
     <Content Include="HW1Description\TestImages\Castle_badexposure.jpg" />
     <Content Include="HW1Description\TestImages\NikonContest2016Winner.png" />
     <Content Include="HW1Description\TestImages\portrait.bmp" />

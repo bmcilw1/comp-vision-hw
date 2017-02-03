@@ -61,7 +61,9 @@ def myHEQ_ROI(img):
     cv2.setMouseCallback(imgName, mouseFunc)
     global SelectROI, refPt
     SelectROI = 1
-    print 'Press any key after selecting ROI in ROI_SELECT'
+    print 'Use mouse to select region in ROI_SELECT.\n'
+    print 'Click within the image to designate the top left corner and hold and drag, releasing mouse to designate bottom right corner.\n'
+    print 'Press any key after selecting.'
 
     cv2.waitKey(0)
     cv2.destroyWindow(imgName)
