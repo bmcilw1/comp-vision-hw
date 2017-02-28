@@ -32,7 +32,7 @@ def myHEQ_RGB(img):
     # Part 3: Merge the enhanced new channels;
     newImg = cv2.merge([bEqu, gEqu, rEqu])
 
-    # Part 4: Show the result in a window named “HEQ_RGB”
+    # Part 4: Show the result in a window named 'HEQ_RGB'
     return newImg
 
 # Problem 2: Write a function, called myHEQ_YCRCB(img), to apply histogram equalization on the Y channel of a color image.
@@ -49,7 +49,7 @@ def myHEQ_YCRCB(img):
     # Part 4: Convert the image back to RGB mode.
     newImg = cv2.cvtColor(newImgYCrCb, cv2.COLOR_YCrCb2BGR)
 
-    # Part 5: Show the result in a window named “HEQ_YCRCB”
+    # Part 5: Show the result in a window named HEQ_YCRCB
     return newImg
 
 # Problem 2: Develop a ROI (Region of Interest) Selection Tool and apply Local Equalization:
@@ -68,18 +68,18 @@ def myHEQ_ROI(img):
     cv2.waitKey(0)
     cv2.destroyWindow(imgName)
 
-    # Part 2: Use “myHEQ_YCRCB()” to equalize the ROI region and get an enhanced patch
+    # Part 2: Use myHEQ_YCRCB() to equalize the ROI region and get an enhanced patch
     newImgROI = myHEQ_YCRCB(ROI_ONLY)
 
     # Part 3: Update the ROI in the image using this new enhanced patch
     imgCopy[refPt[0][1]:refPt[1][1],refPt[0][0]:refPt[1][0]] = newImgROI
 
-    # Part 5: Show the final result in a window named “HEQ_ROI”
+    # Part 5: Show the final result in a window named HEQ_ROI
     return imgCopy
 
 # Test your Step 1 and 2 using two under exposed images. And test your Step 3 program using the NikonContest2016Winner and portrait images.
-# Save your enhanced images to “HEQ_RGB.png”, “HEQ_YCRCB.png”, and “HEQ_ROI.png” respectively
-img = cv2.imread('HW1Description/TestImages/Castle_badexposure.jpg')
+# Save your enhanced images to HEQ_RGB.png, HEQ_YCRCB.png, and HEQ_ROI.png respectively
+img = cv2.imread('hw1/TestImages/Castle_badexposure.jpg')
 #cv2.imshow('DEFAULT', img)
 
 RGB = myHEQ_RGB(img)
@@ -90,7 +90,7 @@ YCRCB = myHEQ_YCRCB(img)
 cv2.imshow('HEQ_YCRCB', YCRCB)
 cv2.imwrite('HW1Description/HEQ_YCRCB.png', YCRCB)
 
-img = cv2.imread('HW1Description/TestImages/NikonContest2016Winner.png')
+img = cv2.imread('hw1/TestImages/NikonContest2016Winner.png')
 ROI = myHEQ_ROI(img)
 cv2.imshow('HEQ_ROI', ROI)
 cv2.imwrite('HW1Description/HEQ_ROI.png', ROI)
