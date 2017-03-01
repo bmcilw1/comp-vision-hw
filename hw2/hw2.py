@@ -21,6 +21,7 @@ def my_Normalize(img):
     return img
 
 def GaussianFilter(sigma):
+    # Round sigma to prevent dimension mis-match
     halfSize = 3 * round(sigma)
     maskSize = 2 * round(halfSize) + 1 
     print halfSize, maskSize
@@ -55,6 +56,7 @@ def my_DerivativesOfGaussian(img, sigma):
     Ixn = np.ones(Ix.shape[0])
     Iyn = np.ones(Iy.shape[0])
 
+    # Normalize for presentation
     Ixn = cv2.normalize(src=Ix, dst=Ixn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
     Iyn = cv2.normalize(src=Iy, dst=Iyn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
 
