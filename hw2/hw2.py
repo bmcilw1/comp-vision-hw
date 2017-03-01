@@ -24,7 +24,6 @@ def GaussianFilter(sigma):
     # Round sigma to prevent dimension mis-match
     halfSize = 3 * round(sigma)
     maskSize = 2 * round(halfSize) + 1 
-    print halfSize, maskSize
     mat = np.ones((maskSize,maskSize)) / (float)( 2 * np.pi * (sigma**2))
     xyRange = np.arange(-halfSize, halfSize+1)
     xx, yy = np.meshgrid(xyRange, xyRange)    
