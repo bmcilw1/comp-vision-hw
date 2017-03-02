@@ -75,7 +75,6 @@ def my_MagAndOrientation(Ix, Iy, t_low):
 
     # Catagorize O
     theta = np.zeros(shape=(M.shape[0],M.shape[1],3))
-
     for x in range(0, O.shape[0]):
       for y in range(0, O.shape[1]):
           if M[x,y] < t_low:
@@ -129,31 +128,44 @@ def my_NMS(mag, orient, t_low):
     return mag_thin
 
 def my_linking(mag_thin, orient, tLow, tHigh):
+    mag_thin = mag_thin.copy()
     result_binary = np.zeros(shape=mag_thin.shape)
 
+    # Link forward
+    # Go from 0 - last element - 1
+    # Preventing crash when you try to access last element + 1
+    for x in range(0, mag_thin.shape[0]-2):
+      for y in range(0, mag_thin.shape[1]-2):
+          if(mag_thin[x][y] >= tHigh):
+              if (tLow <= mag_thin[x+1][y]):
+                  mag_thin[x+1][y] = tHigh
+              elif (tLow <= mag_thin[x+1][y+1]):
+                  mag_thin[x+1][y+1] = tHigh
+              elif (tLow <= mag_thin[x][y+1]):
+                  mag_thin[x][y+1] = tHigh
+              elif (tLow <= mag_thin[x-1][y+1]):
+                  mag_thin[x-1][y+1] = tHigh
+
+    # Link backwards
+    # Go from last element - 1 to 1
+    # Preventing crash when you try to access 0 element - 1
+    for x in range(mag_thin.shape[0]-1, 1):
+      for y in range(mag_thin.shape[1]-1, 1):
+          if(mag_thin[x][y] >= tHigh):
+              if (tLow <= mag_thin[x-1][y]):
+                  mag_thin[x-1][y] = tHigh
+              elif (tLow <= mag_thin[x-1][y-1]):
+                  mag_thin[x-1][y-1] = tHigh
+              elif (tLow <= mag_thin[x][y-1]):
+                  mag_thin[x][y-1] = tHigh
+              elif (tLow <= mag_thin[x+1][y-1]):
+                  mag_thin[x+1][y-1] = tHigh
+
+    # Binary image
     for x in range(0, mag_thin.shape[0]-1):
       for y in range(0, mag_thin.shape[1]-1):
           if(mag_thin[x][y] >= tHigh):
-              if (tLow <= mag_thin[x+1][y]):
-                  mag_thin[x+1][y] = 1
-              elif (tLow <= mag_thin[x+1][y+1]):
-                  mag_thin[x+1][y+1] = 1
-              elif (tLow <= mag_thin[x][y+1]):
-                  mag_thin[x][y+1] = 1
-              elif (tLow <= mag_thin[x-1][y+1]):
-                  mag_thin[x-1][y+1] = 1
-
-    for x in range(mag_thin.shape[0], 1):
-      for y in range(mag_thin.shape[1], 1):
-          if(mag_thin[x][y] >= tHigh):
-              if (tLow <= mag_thin[x-1][y]):
-                  mag_thin[x-1][y] = 1
-              elif (tLow <= mag_thin[x-1][y-1]):
-                  mag_thin[x-1][y-1] = 1
-              elif (tLow <= mag_thin[x][y-1]):
-                  mag_thin[x][y-1] = 1
-              elif (tLow <= mag_thin[x+1][y-1]):
-                  mag_thin[x+1][y-1] = 1
+            result_binary[x][y] = 1
 
     cv2.imshow('Result_binary', result_binary)
     cv2.imwrite('hw2/Result_binary.jpg', result_binary)
@@ -181,7 +193,7 @@ def my_Canny(img, sigma, tLow, tHigh):
 
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
-my_Canny(img, .8, .05, .1)
+my_Canny(img, .5, .07, .2)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
