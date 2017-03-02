@@ -4,22 +4,6 @@
 import cv2
 import numpy as np
 
-def is_Grayscale(img):
-    for x in range(0, img.shape[0]):
-      for y in range(0, img.shape[1]):
-        if img[x, y, 0] != img[x, y, 1] or img[x, y, 1] != img[x, y, 2]:
-            return False
-
-    return True
-
-def my_Normalize(img):
-    # if already grayscale has no effect
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    img = cv2.normalize(src=img, dst=img, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
-
-    return img
-
 def GaussianFilter(sigma):
     # Round sigma to prevent dimension mis-match
     halfSize = 3 * round(sigma)
@@ -32,6 +16,17 @@ def GaussianFilter(sigma):
     mat = mat * exp_part
 
     return mat
+
+def my_Normalize(img):
+    img = img.copy()
+
+    # Is Grayscale?
+    if (len(img.shape) == 3):
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    img = cv2.normalize(src=img, dst=img, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+
+    return img
 
 def my_DerivativesOfGaussian(img, sigma):
     Gsigma = GaussianFilter(sigma)
@@ -56,8 +51,8 @@ def my_DerivativesOfGaussian(img, sigma):
     Iyn = np.zeros(shape=(Iy.shape[0], Iy.shape[1]))
 
     # Normalize for presentation
-    Ixn = cv2.normalize(src=Ix, dst=Ixn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
-    Iyn = cv2.normalize(src=Iy, dst=Iyn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+    Ixn = my_Normalize(Ix)
+    Iyn = my_Normalize(Iy)
 
     cv2.imshow('Ix_Normalized', Ixn)
     cv2.imwrite('hw2/Ix_Normalized.jpg', Ixn)
@@ -69,13 +64,12 @@ def my_DerivativesOfGaussian(img, sigma):
 def my_MagAndOrientation(Ix, Iy, t_low):
     # Mag and orientation
     M = np.sqrt(Ix*Ix + Iy*Iy)
-    #O = np.arctan2(abs(Iy),abs(Ix))
-    #O = np.arctan2(-1*Iy,Ix)
     O = np.arctan2(Iy,Ix)
 
     # Normalize mag
     Mn = np.ones(M.shape[0])
-    Mn = cv2.normalize(src=M, dst=Mn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+    Mn = my_Normalize(M)
+
     cv2.imshow('Mag_Normalized', Mn)
     cv2.imwrite('hw2/Mag_Normalized.jpg', Mn)
 
@@ -182,9 +176,12 @@ def my_Canny(img, sigma, tLow, tHigh):
 
     return
 
+##################
+#  main
+
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
-my_Canny(img, .8, .05, .2)
+my_Canny(img, .8, .05, .1)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
