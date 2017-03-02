@@ -64,12 +64,28 @@ def my_DerivativesOfGaussian(img, sigma):
 
     return Ix, Iy
 
+def my_MagAndOrientation(Ix, Iy):
+    # Mag and orientation
+    M = np.sqrt(Ix*Ix + Iy*Iy)
+    O = np.arctan2(Iy,Ix)
+
+    # Normalize mag
+    Mn = np.ones(M.shape[0])
+    Mn = cv2.normalize(src=M, dst=Mn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+    cv2.imshow('Mn_Normalized', Mn)
+
+    theta = O
+
+    return M, theta
+
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
 img = my_Normalize(img)
-cv2.imshow('my_Normalize', img)
+cv2.imshow('input_Normalized', img)
 
 Ix,Iy = my_DerivativesOfGaussian(img, .8)
+
+M,theta = my_MagAndOrientation(Ix, Iy)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
