@@ -69,6 +69,7 @@ def my_DerivativesOfGaussian(img, sigma):
 def my_MagAndOrientation(Ix, Iy, t_low):
     # Mag and orientation
     M = np.sqrt(Ix*Ix + Iy*Iy)
+    #O = np.arctan2(Iy,Ix)
     O = np.arctan2(Iy,Ix)
 
     # Normalize mag
@@ -120,14 +121,49 @@ def my_NMS(mag, orient, t_low):
     for x in range(0, orient.shape[0]):
       for y in range(0, orient.shape[1]):
           if(mag[x,y] >= t_low):
-              if(True): # Check if is bigger than its two neighbors in the gradient direction
-                  mag_thin[x,y] = mag[x,y]
+              # Check if is bigger than its two neighbors in the gradient direction
+              if(orient[x,y] == 2 and (mag[x,y-1]   <  mag[x,y] and mag[x,y+1]   <=  mag[x,y]) or
+                 orient[x,y] == 3 and (mag[x+1,y-1] <  mag[x,y] and mag[x-1,y+1] <=  mag[x,y]) or
+                 orient[x,y] == 0 and (mag[x-1,y]   <  mag[x,y] and mag[x+1,y]   <=  mag[x,y]) or
+                 orient[x,y] == 1 and (mag[x+1,y+1] <  mag[x,y] and mag[x-1,y-1] <=  mag[x,y])):
+                      mag_thin[x,y] = mag[x,y]
 
-    cv2.imshow('mag_Thin', mag_thin)
+    cv2.imshow('Mag_thin', mag_thin)
+    cv2.imwrite('hw2/Mag_thin.jpg', mag_thin)
 
     return mag_thin
 
+def my_linking(mag_thin, orient, tLow, tHigh):
+    result_binary = np.zeros(shape=mag_thin.shape)
 
+    for x in range(0, mag_thin.shape[0]-1):
+      for y in range(0, mag_thin.shape[1]-1):
+          if(mag_thin[x][y] >= tHigh):
+              if (tLow <= mag_thin[x+1][y]):
+                  mag_thin[x+1][y] = 1
+              elif (tLow <= mag_thin[x+1][y+1]):
+                  mag_thin[x+1][y+1] = 1
+              elif (tLow <= mag_thin[x][y+1]):
+                  mag_thin[x][y+1] = 1
+              elif (tLow <= mag_thin[x-1][y+1]):
+                  mag_thin[x-1][y+1] = 1
+
+    for x in range(mag_thin.shape[0], 1):
+      for y in range(mag_thin.shape[1], 1):
+          if(mag_thin[x][y] >= tHigh):
+              if (tLow <= mag_thin[x-1][y]):
+                  mag_thin[x-1][y] = 1
+              elif (tLow <= mag_thin[x-1][y-1]):
+                  mag_thin[x-1][y-1] = 1
+              elif (tLow <= mag_thin[x][y-1]):
+                  mag_thin[x][y-1] = 1
+              elif (tLow <= mag_thin[x+1][y-1]):
+                  mag_thin[x+1][y-1] = 1
+
+    cv2.imshow('Result_binary', result_binary)
+    cv2.imwrite('hw2/Result_binary.jpg', result_binary)
+
+    return result_binary
 
 def my_Canny(img, sigma, tLow, tHigh):
     img = my_Normalize(img)
@@ -141,11 +177,13 @@ def my_Canny(img, sigma, tLow, tHigh):
 
     mag_thin = my_NMS(M, O, tLow)
 
+    result_binary = my_linking(mag_thin, O, tLow, tHigh)
+
     return
 
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
-my_Canny(img, .8, .05, 1)
+my_Canny(img, .8, .05, .2)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
