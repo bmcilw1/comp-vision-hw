@@ -68,7 +68,6 @@ def my_MagAndOrientation(Ix, Iy):
     # Mag and orientation
     M = np.sqrt(Ix*Ix + Iy*Iy)
     O = np.arctan2(Iy,Ix)
-    print O
 
     # Normalize mag
     Mn = np.ones(M.shape[0])
@@ -115,15 +114,37 @@ def my_MagAndOrientation(Ix, Iy):
 
     return M, O
 
+def my_NMS(mag, orient, t_low):
+    mag_thin = np.zeros(shape=mag.shape)
+
+    for x in range(0, orient.shape[0]):
+      for y in range(0, orient.shape[1]):
+          if(mag[x,y] >= t_low):
+              if(True): # Check if is bigger than its two neighbors in the gradient direction
+                  mag_thin[x,y] = mag[x,y]
+
+    cv2.imshow('mag_Thin', mag_thin)
+
+    return mag_thin
+
+
+
+def my_Canny(img, sigma, tLow, tHigh):
+    img = my_Normalize(img)
+
+    cv2.imshow('input_Normalized', img)
+
+    Ix,Iy = my_DerivativesOfGaussian(img, sigma)
+
+    M,O = my_MagAndOrientation(Ix, Iy)
+
+    mag_thin = my_NMS(M, O, tLow)
+
+    return
+
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
-img = my_Normalize(img)
-
-cv2.imshow('input_Normalized', img)
-
-Ix,Iy = my_DerivativesOfGaussian(img, .8)
-
-M,theta = my_MagAndOrientation(Ix, Iy)
+my_Canny(img, .8, .05, 1)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
