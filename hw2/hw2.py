@@ -60,11 +60,13 @@ def my_DerivativesOfGaussian(img, sigma):
     Iyn = cv2.normalize(src=Iy, dst=Iyn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
 
     cv2.imshow('Ix_Normalized', Ixn)
+    cv2.imwrite('hw2/Ix_Normalized.jpg', Ixn)
     cv2.imshow('Iy_Normalized', Iyn)
+    cv2.imwrite('hw2/Iy_Normalized.jpg', Iyn)
 
     return Ix, Iy
 
-def my_MagAndOrientation(Ix, Iy):
+def my_MagAndOrientation(Ix, Iy, t_low):
     # Mag and orientation
     M = np.sqrt(Ix*Ix + Iy*Iy)
     O = np.arctan2(Iy,Ix)
@@ -72,45 +74,43 @@ def my_MagAndOrientation(Ix, Iy):
     # Normalize mag
     Mn = np.ones(M.shape[0])
     Mn = cv2.normalize(src=M, dst=Mn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
-    cv2.imshow('Mn_Normalized', Mn)
+    cv2.imshow('Mag_Normalized', Mn)
+    cv2.imwrite('hw2/Mag_Normalized.jpg', Mn)
 
     # Catagorize O
     theta = np.zeros(shape=(M.shape[0],M.shape[1],3))
 
     for x in range(0, O.shape[0]):
       for y in range(0, O.shape[1]):
-          if O[x,y] > -np.pi/8 and O[x,y] <= np.pi/8:
-              O[x,y] = 2
-              # Blue
-              theta[x,y,0] = 255
+          if M[x,y] < t_low:
+              O[x,y] = -1
+          elif -np.pi/8 < O[x,y] and O[x,y] <= np.pi/8:
+              O[x,y] = 0
+              # Red
+              theta[x,y,0] = 0
               theta[x,y,1] = 0
-              theta[x,y,2] = 0
-          elif O[x,y] > np.pi/8 and O[x,y] <= 3*np.pi/8:
+              theta[x,y,2] = 255
+          elif -3*np.pi/8 < O[x,y] and O[x,y] <= -np.pi/8:
               O[x,y] = 1
               # Green
               theta[x,y,0] = 0
               theta[x,y,1] = 255
               theta[x,y,2] = 0
-          elif O[x,y] > -3*np.pi/8 and O[x,y] <= -np.pi/8:
+          elif np.pi/8 < O[x,y] and O[x,y] <= 3*np.pi/8:
               O[x,y] = 3
               # Gray
               theta[x,y,0] = 128
               theta[x,y,1] = 128
               theta[x,y,2] = 128
           elif (-np.pi/2 < O[x,y] and O[x,y] <= -3*np.pi/8) or (3*np.pi/8 < O[x,y] and O[x,y] <= np.pi/2):
-              O[x,y] = 0
-              # Red
-              theta[x,y,0] = 0
-              theta[x,y,1] = 0
-              theta[x,y,2] = 255
-          else:
-              O[x,y] = -1
-              # black
-              theta[x,y,0] = 0
+              O[x,y] = 2
+              # Blue
+              theta[x,y,0] = 255
               theta[x,y,1] = 0
               theta[x,y,2] = 0
 
     cv2.imshow('O_Catagorized', theta)
+    cv2.imwrite('hw2/O_Catagorized.jpg', theta)
 
     return M, O
 
@@ -133,10 +133,11 @@ def my_Canny(img, sigma, tLow, tHigh):
     img = my_Normalize(img)
 
     cv2.imshow('input_Normalized', img)
+    cv2.imwrite('hw2/input_Normalized.jpg', img)
 
     Ix,Iy = my_DerivativesOfGaussian(img, sigma)
 
-    M,O = my_MagAndOrientation(Ix, Iy)
+    M,O = my_MagAndOrientation(Ix, Iy, tLow)
 
     mag_thin = my_NMS(M, O, tLow)
 
