@@ -74,9 +74,19 @@ def my_MagAndOrientation(Ix, Iy):
     Mn = cv2.normalize(src=M, dst=Mn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
     cv2.imshow('Mn_Normalized', Mn)
 
-    theta = O
+    # Catagorize O
+    for x in range(0, O.shape[0]):
+      for y in range(0, O.shape[1]):
+          if O[x,y] > 0 and O[x,y] <= np.pi/4:
+              O[x,y] = 0
+          if O[x,y] > np.pi/4 and O[x,y] <= np.pi/2:
+              O[x,y] = 3
+          if O[x,y] > np.pi/2 and O[x,y] <= 3*np.pi/4:
+              O[x,y] = 2
+          if O[x,y] > 3*np.pi/4 and O[x,y] <= 0:
+              O[x,y] = 1
 
-    return M, theta
+    return M, O
 
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
