@@ -69,7 +69,8 @@ def my_DerivativesOfGaussian(img, sigma):
 def my_MagAndOrientation(Ix, Iy, t_low):
     # Mag and orientation
     M = np.sqrt(Ix*Ix + Iy*Iy)
-    #O = np.arctan2(Iy,Ix)
+    #O = np.arctan2(abs(Iy),abs(Ix))
+    #O = np.arctan2(-1*Iy,Ix)
     O = np.arctan2(Iy,Ix)
 
     # Normalize mag
@@ -85,30 +86,30 @@ def my_MagAndOrientation(Ix, Iy, t_low):
       for y in range(0, O.shape[1]):
           if M[x,y] < t_low:
               O[x,y] = -1
-          elif -np.pi/8 < O[x,y] and O[x,y] <= np.pi/8:
-              O[x,y] = 0
-              # Red
-              theta[x,y,0] = 0
-              theta[x,y,1] = 0
-              theta[x,y,2] = 255
-          elif -3*np.pi/8 < O[x,y] and O[x,y] <= -np.pi/8:
+          elif (-3*np.pi/8 < O[x,y] and O[x,y] <= -np.pi/8) or (5*np.pi/8 < O[x,y] and O[x,y] <= 7*np.pi/8):
               O[x,y] = 1
               # Green
               theta[x,y,0] = 0
               theta[x,y,1] = 255
               theta[x,y,2] = 0
-          elif np.pi/8 < O[x,y] and O[x,y] <= 3*np.pi/8:
+          elif (np.pi/8 < O[x,y] and O[x,y] <= 3*np.pi/8) or (-7*np.pi/8 < O[x,y] and O[x,y] <= -5*np.pi/8):
               O[x,y] = 3
               # Gray
               theta[x,y,0] = 128
               theta[x,y,1] = 128
               theta[x,y,2] = 128
-          elif (-np.pi/2 < O[x,y] and O[x,y] <= -3*np.pi/8) or (3*np.pi/8 < O[x,y] and O[x,y] <= np.pi/2):
+          elif (-5*np.pi/8 < O[x,y] and O[x,y] <= -3*np.pi/8) or (3*np.pi/8 < O[x,y] and O[x,y] <= 5*np.pi/8):
               O[x,y] = 2
               # Blue
               theta[x,y,0] = 255
               theta[x,y,1] = 0
               theta[x,y,2] = 0
+          else:
+              O[x,y] = 0
+              # Red
+              theta[x,y,0] = 0
+              theta[x,y,1] = 0
+              theta[x,y,2] = 255
 
     cv2.imshow('O_Catagorized', theta)
     cv2.imwrite('hw2/O_Catagorized.jpg', theta)
@@ -122,10 +123,10 @@ def my_NMS(mag, orient, t_low):
       for y in range(0, orient.shape[1]):
           if(mag[x,y] >= t_low):
               # Check if is bigger than its two neighbors in the gradient direction
-              if(orient[x,y] == 2 and (mag[x,y-1]   <  mag[x,y] and mag[x,y+1]   <=  mag[x,y]) or
-                 orient[x,y] == 3 and (mag[x+1,y-1] <  mag[x,y] and mag[x-1,y+1] <=  mag[x,y]) or
-                 orient[x,y] == 0 and (mag[x-1,y]   <  mag[x,y] and mag[x+1,y]   <=  mag[x,y]) or
-                 orient[x,y] == 1 and (mag[x+1,y+1] <  mag[x,y] and mag[x-1,y-1] <=  mag[x,y])):
+              if(orient[x,y] == 0 and (mag[x,y-1]   <  mag[x,y] and mag[x,y+1]   <=  mag[x,y]) or
+                 orient[x,y] == 1 and (mag[x+1,y-1] <  mag[x,y] and mag[x-1,y+1] <=  mag[x,y]) or
+                 orient[x,y] == 2 and (mag[x-1,y]   <  mag[x,y] and mag[x+1,y]   <=  mag[x,y]) or
+                 orient[x,y] == 3 and (mag[x+1,y+1] <  mag[x,y] and mag[x-1,y-1] <=  mag[x,y])):
                       mag_thin[x,y] = mag[x,y]
 
     cv2.imshow('Mag_thin', mag_thin)
