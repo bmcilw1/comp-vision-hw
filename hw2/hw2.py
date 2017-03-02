@@ -52,8 +52,8 @@ def my_DerivativesOfGaussian(img, sigma):
     Ix = cv2.filter2D(img, -1, Gx)
     Iy = cv2.filter2D(img, -1, Gy)
 
-    Ixn = np.ones(Ix.shape[0])
-    Iyn = np.ones(Iy.shape[0])
+    Ixn = np.zeros(shape=(Ix.shape[0], Ix.shape[1]))
+    Iyn = np.zeros(shape=(Iy.shape[0], Iy.shape[1]))
 
     # Normalize for presentation
     Ixn = cv2.normalize(src=Ix, dst=Ixn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
@@ -68,6 +68,7 @@ def my_MagAndOrientation(Ix, Iy):
     # Mag and orientation
     M = np.sqrt(Ix*Ix + Iy*Iy)
     O = np.arctan2(Iy,Ix)
+    print O
 
     # Normalize mag
     Mn = np.ones(M.shape[0])
@@ -75,22 +76,49 @@ def my_MagAndOrientation(Ix, Iy):
     cv2.imshow('Mn_Normalized', Mn)
 
     # Catagorize O
+    theta = np.zeros(shape=(M.shape[0],M.shape[1],3))
+
     for x in range(0, O.shape[0]):
       for y in range(0, O.shape[1]):
-          if O[x,y] > 0 and O[x,y] <= np.pi/4:
-              O[x,y] = 0
-          if O[x,y] > np.pi/4 and O[x,y] <= np.pi/2:
-              O[x,y] = 3
-          if O[x,y] > np.pi/2 and O[x,y] <= 3*np.pi/4:
+          if O[x,y] > -np.pi/8 and O[x,y] <= np.pi/8:
               O[x,y] = 2
-          if O[x,y] > 3*np.pi/4 and O[x,y] <= 0:
+              # Blue
+              theta[x,y,0] = 255
+              theta[x,y,1] = 0
+              theta[x,y,2] = 0
+          elif O[x,y] > np.pi/8 and O[x,y] <= 3*np.pi/8:
               O[x,y] = 1
+              # Green
+              theta[x,y,0] = 0
+              theta[x,y,1] = 255
+              theta[x,y,2] = 0
+          elif O[x,y] > -3*np.pi/8 and O[x,y] <= -np.pi/8:
+              O[x,y] = 3
+              # Gray
+              theta[x,y,0] = 128
+              theta[x,y,1] = 128
+              theta[x,y,2] = 128
+          elif (-np.pi/2 < O[x,y] and O[x,y] <= -3*np.pi/8) or (3*np.pi/8 < O[x,y] and O[x,y] <= np.pi/2):
+              O[x,y] = 0
+              # Red
+              theta[x,y,0] = 0
+              theta[x,y,1] = 0
+              theta[x,y,2] = 255
+          else:
+              O[x,y] = -1
+              # black
+              theta[x,y,0] = 0
+              theta[x,y,1] = 0
+              theta[x,y,2] = 0
+
+    cv2.imshow('O_Catagorized', theta)
 
     return M, O
 
 img = cv2.imread('hw2/testImages/TestImg1.jpg')
 
 img = my_Normalize(img)
+
 cv2.imshow('input_Normalized', img)
 
 Ix,Iy = my_DerivativesOfGaussian(img, .8)
