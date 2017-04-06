@@ -20,7 +20,7 @@ def harris(img, blockSize, kSize, k, cThresh):
     return c, cShow
 
 def hw3(i1, i2):
-    cThresh = .007
+    cThresh = .02
 
     c1, c1Show = harris(i1, 2, 3, .04, cThresh)
     c2, c2Show = harris(i2, 2, 3, .04, cThresh)
