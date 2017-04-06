@@ -5,7 +5,9 @@ import cv2
 import numpy as np
 
 def harris(img, blockSize, kSize, k, cThresh):
-    c = cv2.cornerHarris(img, blockSize, kSize, k)
+    # Convert to grayscale and perform harris
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    c = cv2.cornerHarris(gray, blockSize, kSize, k)
     cShow = img.copy()
 
     # viewing Harris corner detecion adapted from: 
@@ -16,36 +18,57 @@ def harris(img, blockSize, kSize, k, cThresh):
     cDial = cv2.dilate(c, None)
 
     # Threshold for corner detection
-    cShow[cDial>cThresh*cDial.max()]= 255
+    cShow[cDial>cThresh*cDial.max()]= [0,0,255]
 
     return c, cShow
 
 def getCornerCoordinates(c, cThresh):
     cord = []
+    ctemp = c.copy()
     cmax = c.max()
 
+    # Fist get all possible corner points
     x, y = c.shape
     for x in range(0, x):
         for y in range(0, y):
-            if c[x,y] > cThresh*cmax:
-                cord.append((x,y))
+            # Check if possible corner
+            if (c[y,x] > cThresh*cmax):
+                ctemp[y,x] = c[y,x]
 
-    return cord
+    # Only keep local maximum pixels in each group for each corner
+    cv2.
+
+    return np.asarray(cord)
+
+def zncc(cord1, cord2, i1, i2):
+    # Compute similarity score for each corner point against every other corner point
+    # Return array cord1.size * cord2.size of scores
+    matchScore = [] #np.zeros(cord1.size, cord2.size)
+
+    return matchScore
+
+def matchCorners(cord1, cord2, i1, i2):
+    # similarity threshold, given in problem
+    simThresh = .8
+
+    zncc(cord1, cord2, i1, i2)
+
+    return
 
 def hw3(i1, i2):
-    cThresh = .02
-
-    c1, c1Show = harris(i1, 2, 3, .04, cThresh)
-    c2, c2Show = harris(i2, 2, 3, .04, cThresh)
+    c1, c1Show = harris(i1, 2, 3, .04, .02)
+    c2, c2Show = harris(i2, 2, 3, .04, .02)
 
     # Show harris corner images
-    cv2.imshow("Corners img1", c1Show)
-    cv2.imshow("Corners img2", c2Show)
+    cv2.imshow("Corner img1", c1Show)
+    cv2.imshow("Corner img2", c2Show)
 
     # Get array of coordinates for corners
-    cord1 = getCornerCoordinates(c1, cThresh)
-    cord2 = getCornerCoordinates(c2, cThresh)
+    cord1 = getCornerCoordinates(c1, .02)
+    cord2 = getCornerCoordinates(c2, .02)
 
+    # determine most similar corners
+#    match = matchCorners(cord1, cord2, i1, i2)
 
     return
 
@@ -54,8 +77,8 @@ def hw3(i1, i2):
 #  main
 
 # Load images as grayscale
-img1 = cv2.imread('hw3_4/TestingImages/goldengate-02.png', 0)
-img2 = cv2.imread('hw3_4/TestingImages/goldengate-03.png', 0)
+img1 = cv2.imread('hw3_4/TestingImages/goldengate-02.png')
+img2 = cv2.imread('hw3_4/TestingImages/goldengate-03.png')
 
 #cv2.imshow("Original img1", img1)
 #cv2.imshow("Original img2", img2)
