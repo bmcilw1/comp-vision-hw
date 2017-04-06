@@ -12,12 +12,25 @@ def harris(img, blockSize, kSize, k, cThresh):
     # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
 
     # result is dilated for marking the corners
+    #cDial = c.copy()
     cDial = cv2.dilate(c, None)
 
     # Threshold for corner detection
     cShow[cDial>cThresh*cDial.max()]= 255
 
     return c, cShow
+
+def getCornerCoordinates(c, cThresh):
+    cord = []
+    cmax = c.max()
+
+    x, y = c.shape
+    for x in range(0, x):
+        for y in range(0, y):
+            if c[x,y] > cThresh*cmax:
+                cord.append((x,y))
+
+    return cord
 
 def hw3(i1, i2):
     cThresh = .02
@@ -28,6 +41,11 @@ def hw3(i1, i2):
     # Show harris corner images
     cv2.imshow("Corners img1", c1Show)
     cv2.imshow("Corners img2", c2Show)
+
+    # Get array of coordinates for corners
+    cord1 = getCornerCoordinates(c1, cThresh)
+    cord2 = getCornerCoordinates(c2, cThresh)
+
 
     return
 
