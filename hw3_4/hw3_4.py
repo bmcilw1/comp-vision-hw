@@ -35,8 +35,21 @@ def getCornerCoordinates(c, cThresh):
             if (c[y,x] > cThresh*cmax):
                 ctemp[y,x] = c[y,x]
 
-    # Only keep local maximum pixels in each group for each corner
-    cv2.
+    # NMS- Only keep local maximum pixels in each group for each corner
+    kernel = np.ones((4,4),np.uint8)
+    cNMS = cv2.erode(c,kernel,iterations = 1)
+    
+    print cNMS
+    # TODO: normalize back to original max and min
+
+    for x in range(0, x):
+        for y in range(0, y):
+            # Check if possible corner
+            if (cNMS[y,x] > cThresh*cmax):
+                print y,x
+                cord.append(y,x)
+
+    print cord
 
     return np.asarray(cord)
 
