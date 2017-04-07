@@ -24,6 +24,7 @@ def harris(img, blockSize, kSize, k, cThresh):
 
 def getCornerCoordinates(c, cThresh):
     cord = []
+    unFilterdcord = []
     ctemp = c.copy()
     cmax = c.max()
 
@@ -33,6 +34,7 @@ def getCornerCoordinates(c, cThresh):
         for y in range(0, y):
             # Check if possible corner
             if (c[y,x] > cThresh*cmax):
+                unFilterdcord.append((y,x))
                 ctemp[y,x] = c[y,x]
 
     # NMS- Only keep local maximum pixels in each group for each corner
@@ -48,8 +50,10 @@ def getCornerCoordinates(c, cThresh):
             if (cNMS[y,x] > cThresh*cmax):
                 cord.append((y,x))
 
-    print "Cord: "
-    print cord
+    print "len Cord: "
+    print len(cord)
+    print "len unfiltered Cord: "
+    print len(unFilterdcord)
 
     return np.asarray(cord)
 
