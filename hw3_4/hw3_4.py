@@ -73,8 +73,8 @@ def matchCorners(cord1, cord2, i1, i2):
     return
 
 def hw3(i1, i2):
-    c1, c1Show = harris(i1, 2, 3, .04, .02)
-    c2, c2Show = harris(i2, 2, 3, .04, .02)
+    c1, c1Show = harris(i1, 5, 5, .04, .02)
+    c2, c2Show = harris(i2, 5, 5, .04, .02)
 
     # Show harris corner images
     cv2.imshow("Corner img1", c1Show)
