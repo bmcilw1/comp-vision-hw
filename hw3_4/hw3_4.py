@@ -70,11 +70,11 @@ def matchCorners(cord1, cord2, i1, i2):
 
     zncc(cord1, cord2, i1, i2)
 
-    return
+    return 0
 
 def hw3(i1, i2):
-    c1, c1Show = harris(i1, 5, 5, .04, .02)
-    c2, c2Show = harris(i2, 5, 5, .04, .02)
+    c1, c1Show = harris(i1, 5, 5, .04, .005)
+    c2, c2Show = harris(i2, 5, 5, .04, .005)
 
     # Show harris corner images
     cv2.imshow("Corner img1", c1Show)
@@ -85,9 +85,35 @@ def hw3(i1, i2):
     cord2 = getCornerCoordinates(c2, .02)
 
     # determine most similar corners
-#    match = matchCorners(cord1, cord2, i1, i2)
+    match = matchCorners(cord1, cord2, i1, i2)
 
     return
+
+# Provided by instructor
+def construct_openCVKeyPtList(corners, keyptsize=1):
+    keyPtsList = []
+    for i in range(len(corners)):
+        #corners[i][1] and corners[i][0] store the column and row index of the corner
+        keyPtsList.append(cv2.KeyPoint(x=corners[i][1], y=corners[i][0], _size=keyptsize))
+    return keyPtsList
+
+# Provided by instructor
+def construct_openCVDMatch(corners1, corners2, cornerMatches):
+    dmatch = list()
+    for i in range(len(cornerMatches)):
+        #cornerMatches[i][0] and cornerMatches[i][1] store the indices of corresponded corners, respectively
+        #cornerMatches[i][2] stores the corresponding ZNCC matching score
+        c_match = cv2.DMatch(cornerMatches[i][0], cornerMatches[i][1], cornerMatches[i][2])
+        dmatch.append(c_match)    
+    return dmatch
+    
+# Provided by instructor
+def draw_matches(img1, img2, corners1, corners2, matches):
+    keyPts1 = construct_openCVKeyPtList(corners1)
+    keyPts2 = construct_openCVKeyPtList(corners2)
+    dmatch = construct_openCVDMatch(corners1, corners2, matches)
+    matchingImg = cv2.drawMatches(img1, keyPts1, img2, keyPts2, dmatch, None)
+    cv2.imwrite('cornerMatching.png', matchingImg)
 
 
 ##################
