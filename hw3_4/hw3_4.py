@@ -57,20 +57,15 @@ def getCornerCoordinates(c, cThresh):
 
     return np.asarray(cord)
 
-def zncc(cord1, cord2, i1, i2):
-    # Compute similarity score for each corner point against every other corner point
-    # Return array cord1.size * cord2.size of scores
-    matchScore = [] #np.zeros(cord1.size, cord2.size)
-
-    return matchScore
-
-def matchCorners(cord1, cord2, i1, i2):
-    # similarity threshold, given in problem
-    simThresh = .8
-
-    zncc(cord1, cord2, i1, i2)
+def score_ZNCC(patch1, patch2):
 
     return 0
+
+def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
+    match = []
+
+
+    return match
 
 def hw3(i1, i2):
     c1, c1Show = harris(i1, 5, 5, .04, .005)
@@ -81,11 +76,11 @@ def hw3(i1, i2):
     cv2.imshow("Corner img2", c2Show)
 
     # Get array of coordinates for corners
-    cord1 = getCornerCoordinates(c1, .02)
-    cord2 = getCornerCoordinates(c2, .02)
+    corners1 = getCornerCoordinates(c1, .02)
+    corners2 = getCornerCoordinates(c2, .02)
 
     # determine most similar corners
-    match = matchCorners(cord1, cord2, i1, i2)
+    match = matchKeyPts(i1, i2, 15, corners1, corners2, .98)
 
     return
 
