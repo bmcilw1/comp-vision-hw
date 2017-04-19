@@ -22,7 +22,7 @@ def harris(img, blockSize, kSize, k, cThresh):
     cDial = cv2.dilate(c, None)
 
     # Threshold for corner detection
-    cShow[cDial>cThresh*cDial.max()]= 0
+    cShow[cDial>cThresh*cDial.max()]= 1
 
     return c, cShow
 
@@ -33,7 +33,7 @@ def getCornerCoordinates(c, cThresh):
     cmax = c.max()
 
     # Fist get all possible corner points
-    x, y = c.shape
+    y, x = c.shape
     for x in range(0, x):
         for y in range(0, y):
             # Check if possible corner
@@ -47,7 +47,7 @@ def getCornerCoordinates(c, cThresh):
 
     # Grab max points
     cmax = cNMS.max()
-    x, y = cNMS.shape
+    y, x = cNMS.shape
     for x in range(0, x):
         for y in range(0, y):
             # Check if corner
@@ -62,15 +62,8 @@ def getCornerCoordinates(c, cThresh):
     return np.asarray(cord)
 
 def padding(img, padSize):
-    img_pad = np.zeros((img.shape[1] + 2*padSize,img.shape[0] + 2*padSize), img.dtype)
-
-    print "img.shape"
-    print img.shape
-
-    x, y = img.shape
-    for x in range(0, x):
-        for y in range(0, y):
-            img_pad[y+padSize,x+padSize] = img[y,x]
+    img_pad = np.zeros((img.shape[0] + 2*padSize,img.shape[1] + 2*padSize), img.dtype)
+    img_pad[padSize:img.shape[0]+padSize, padSize:img.shape[1]+padSize] = img
 
     return img_pad
 
