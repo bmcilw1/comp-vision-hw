@@ -42,7 +42,7 @@ def getCornerCoordinates(c, cThresh):
                 ctemp[y,x] = c[y,x]
 
     # NMS- Only keep local maximum pixels in each group for each corner
-    kernel = np.ones((4,4),np.uint8)
+    kernel = np.ones((21,21),np.uint8)
     cNMS = cv2.erode(c,kernel,iterations = 2)
 
     # Grab max points
