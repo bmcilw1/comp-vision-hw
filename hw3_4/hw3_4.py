@@ -39,19 +39,11 @@ def score_ZNCC(patch1, patch2):
 
     p1 = p1 - np.mean(p1) 
     p1Norm = np.linalg.norm(p1)
-
-    if p1Norm == 0:
-        p1Norm = np.zeros(p1.shape)
-    else:
-        p1Norm = p1 / p1Norm
+    p1Norm = np.zeros(p1.shape) if p1Norm == 0 else p1 / p1Norm
 
     p2 = p2 - np.mean(p2)
     p2Norm = np.linalg.norm(p2)
-
-    if p2Norm == 0:
-        p2Norm = np.zeros(p2.shape)
-    else:
-        p2Norm = p2 / p2Norm
+    p2Norm = np.zeros(p2.shape) if p2Norm == 0 else p2 / p2Norm
 
     return np.dot(p1Norm, p2Norm)
 
