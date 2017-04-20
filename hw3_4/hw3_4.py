@@ -28,15 +28,18 @@ def extract_keypts_Harris(img, thresh_Harris=0.005, nms_size=10):
     return corners
 
 def padding(img, padSize):
+    # Padd image by padSize with zeros
     img_pad = np.zeros((img.shape[0] + 2*padSize,img.shape[1] + 2*padSize), img.dtype)
     img_pad[padSize:img.shape[0]+padSize, padSize:img.shape[1]+padSize] = img
 
     return img_pad
 
 def score_ZNCC(patch1, patch2):
+    # Allow us to use numpy built ins
     p1 = patch1.flatten()
     p2 = patch2.flatten()
 
+    # ZNCC as in slides
     p1 = p1 - np.mean(p1) 
     p1Norm = np.linalg.norm(p1)
     p1Norm = np.zeros(p1.shape) if p1Norm == 0 else p1 / p1Norm
@@ -73,15 +76,17 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
     return match
 
 def hw3(i1, i2):
+    # Get corners 
     c1 = extract_keypts_Harris(i1)
     c2 = extract_keypts_Harris(i2)
 
     # determine most similar corners
     matches = matchKeyPts(i1, i2, 15, c1, c2, .98)
 
+    # show it
     draw_matches(i1, i2, c1, c2, matches)
 
-    return
+    return matches
 
 # Provided by instructor
 def construct_openCVKeyPtList(corners, keyptsize=1):
