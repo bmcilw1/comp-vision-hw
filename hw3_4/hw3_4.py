@@ -86,27 +86,28 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
     i1Pd = padding(img1, patchSize)
     i2Pd = padding(img2, patchSize)
     
+    '''
     cv2.imshow("Pad 1", i1Pd)
     cv2.imshow("Pad 2", i2Pd)
+    '''
 
-    print corners1[0]
-    p1 = i1Pd[corners1[2][0]: corners1[2][0]+patchSize, corners1[2][1]: corners1[2][1]+patchSize]
-    print p1
-    return match
-
-'''
     for c1 in corners1:
         # get first patch
-        p1 = i1Pd[c1[0]-patchSize: c1[0]+patchSize, c1[1]-patchSize: c1[1]+patchSize]
+        p1 = i1Pd[c1[0]: c1[0]+patchSize, c1[1]: c1[1]+patchSize]
+        bestScore = 0;
+        bestc2 = ();
         for c2 in corners2:
             # get second patch
-            p2 = i2Pd[c2[0]-patchSize: c2[0]+patchSize, c2[1]-patchSize: c2[1]+patchSize]
+            p2 = i2Pd[c2[0]: c2[0]+patchSize, c2[1]: c2[1]+patchSize]
             zncc = score_ZNCC(p1, p2)
-            print zncc
-            if (zncc > maxScoreThresh):
-                match.append((c1, c2))
-'''
+            if (zncc > bestScore):
+                bestc2 = c2
+                bestScore = zncc
 
+        if (bestScore > maxScoreThresh):
+            match.append((c1, bestc2))
+
+    return match
 
 def hw3(i1, i2):
     c1, c1Show = harris(i1, 5, 5, .04, .005)
