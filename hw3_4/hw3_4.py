@@ -71,11 +71,21 @@ def score_ZNCC(patch1, patch2):
     p1 = patch1.flatten()
     p2 = patch2.flatten()
 
-    p1Norm = p1 - np.mean(p1) 
-    p1Norm = p1Norm / np.linalg.norm(p1Norm)
+    p1 = p1 - np.mean(p1) 
+    p1Norm = np.linalg.norm(p1)
 
-    p2Norm = p2 - np.mean(p2)
-    p2Norm = p2Norm / np.linalg.norm(p2Norm)
+    if p1Norm == 0:
+        p1Norm = 0
+    else:
+        p1Norm = p1 / p1Norm
+
+    p2 = p2 - np.mean(p2)
+    p2Norm = np.linalg.norm(p2)
+
+    if p2Norm == 0:
+        p2Norm = 0
+    else:
+        p2Norm = p2 / p2Norm
 
     return np.dot(p1Norm, p2Norm)
 
@@ -100,6 +110,7 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
             # get second patch
             p2 = i2Pd[c2[0]: c2[0]+patchSize, c2[1]: c2[1]+patchSize]
             zncc = score_ZNCC(p1, p2)
+            print zncc
             if (zncc > bestScore):
                 bestc2 = c2
                 bestScore = zncc
