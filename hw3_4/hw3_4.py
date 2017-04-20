@@ -9,57 +9,23 @@ def init_image(img):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     return gray
 
-def harris(img, blockSize, kSize, k, cThresh):
-    # Perform harris
-    c = cv2.cornerHarris(img, blockSize, kSize, k)
-    cShow = img.copy()
+def extract_keypts_Harris(img, thresh_Harris=0.005, nms_size=10):
+    corners = []
+    # Get corner candidates
+    c = cv2.cornerHarris(img, 5, 5, .005)
 
-    # viewing Harris corner detecion adapted from: 
-    # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
+    # Padd boundry
+    pad = padding(c, nms_size)
 
-    # result is dilated for marking the corners
-    #cDial = c.copy()
-    cDial = cv2.dilate(c, None)
+    # Do NMS
+    for i in range(nms_size, nms_size+c.shape[0]): # stay within padding range
+        for j in range(nms_size, nms_size+c.shape[1]):
+            if (pad[i,j] > thresh_Harris):
+                win = pad[i-nms_size:i+nms_size, j-nms_size:j+nms_size]
+                if (pad[i,j] == np.max(win)):
+                    corners.append((i-nms_size, j-nms_size))
 
-    # Threshold for corner detection
-    cShow[cDial>cThresh*cDial.max()]= 1
-
-    return c, cShow
-
-def getCornerCoordinates(c, cThresh):
-    cord = []
-    unFilterdcord = []
-    ctemp = c.copy()
-    cmax = c.max()
-
-    # Fist get all possible corner points
-    y, x = c.shape
-    for x in range(0, x):
-        for y in range(0, y):
-            # Check if possible corner
-            if (c[y,x] > cThresh*cmax):
-                unFilterdcord.append((y,x))
-                ctemp[y,x] = c[y,x]
-
-    # NMS- Only keep local maximum pixels in each group for each corner
-    kernel = np.ones((21,21),np.uint8)
-    cNMS = cv2.erode(c,kernel,iterations = 2)
-
-    # Grab max points
-    cmax = cNMS.max()
-    y, x = cNMS.shape
-    for x in range(0, x):
-        for y in range(0, y):
-            # Check if corner
-            if (cNMS[y,x] > cThresh*cmax):
-                cord.append((y,x))
-
-    print "len Cord: "
-    print len(cord)
-    print "len unfiltered Cord: "
-    print len(unFilterdcord)
-
-    return np.asarray(cord)
+    return corners
 
 def padding(img, padSize):
     img_pad = np.zeros((img.shape[0] + 2*padSize,img.shape[1] + 2*padSize), img.dtype)
@@ -75,7 +41,7 @@ def score_ZNCC(patch1, patch2):
     p1Norm = np.linalg.norm(p1)
 
     if p1Norm == 0:
-        p1Norm = 0
+        p1Norm = np.zeros(p1.shape)
     else:
         p1Norm = p1 / p1Norm
 
@@ -83,7 +49,7 @@ def score_ZNCC(patch1, patch2):
     p2Norm = np.linalg.norm(p2)
 
     if p2Norm == 0:
-        p2Norm = 0
+        p2Norm = np.zeros(p2.shape)
     else:
         p2Norm = p2 / p2Norm
 
@@ -96,11 +62,6 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
     i1Pd = padding(img1, patchSize)
     i2Pd = padding(img2, patchSize)
     
-    '''
-    cv2.imshow("Pad 1", i1Pd)
-    cv2.imshow("Pad 2", i2Pd)
-    '''
-
     for c1 in corners1:
         # get first patch
         p1 = i1Pd[c1[0]: c1[0]+patchSize, c1[1]: c1[1]+patchSize]
@@ -110,7 +71,6 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
             # get second patch
             p2 = i2Pd[c2[0]: c2[0]+patchSize, c2[1]: c2[1]+patchSize]
             zncc = score_ZNCC(p1, p2)
-            print zncc
             if (zncc > bestScore):
                 bestc2 = c2
                 bestScore = zncc
@@ -118,22 +78,15 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
         if (bestScore > maxScoreThresh):
             match.append((c1, bestc2))
 
+    print match
     return match
 
 def hw3(i1, i2):
-    c1, c1Show = harris(i1, 5, 5, .04, .005)
-    c2, c2Show = harris(i2, 5, 5, .04, .005)
-
-    # Show harris corner images
-    cv2.imshow("Corner img1", c1Show)
-    cv2.imshow("Corner img2", c2Show)
-
-    # Get array of coordinates for corners
-    corners1 = getCornerCoordinates(c1, .02)
-    corners2 = getCornerCoordinates(c2, .02)
+    c1 = extract_keypts_Harris(i1)
+    c2 = extract_keypts_Harris(i2)
 
     # determine most similar corners
-    match = matchKeyPts(i1, i2, 15, corners1, corners2, .98)
+    match = matchKeyPts(i1, i2, 15, c1, c2, .98)
 
     return
 
