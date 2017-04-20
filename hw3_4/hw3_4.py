@@ -6,8 +6,7 @@ import numpy as np
 
 def init_image(img):
     # Convert to grayscale
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    return gray
+    return cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
 def extract_keypts_Harris(img, thresh_Harris=0.005, nms_size=10):
     corners = []
