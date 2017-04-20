@@ -85,7 +85,7 @@ def hw3(i1, i2):
     # show it
     draw_matches(i1, i2, c1, c2, matches)
 
-    return matches
+    return c1, c2, matches
 
 # Provided by instructor
 def construct_openCVKeyPtList(corners, keyptsize=1):
@@ -114,6 +114,9 @@ def draw_matches(img1, img2, corners1, corners2, matches):
     cv2.imshow('HW3', matchingImg)
     cv2.imwrite('cornerMatching.png', matchingImg)
 
+def hw4(i1, i2, c1, c2, matches):
+
+    return
 
 ##################
 #  main
@@ -125,7 +128,11 @@ img2 = cv2.imread('hw3_4/TestingImages/goldengate-03.png')
 img1 = init_image(img1)
 img2 = init_image(img2)
 
-hw3(img1, img2)
+# Get matching points
+c1, c2, matches = hw3(img1, img2)
+
+# Stich images together
+hw4(img1, img2, c1, c2, matches)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
