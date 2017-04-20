@@ -68,18 +68,45 @@ def padding(img, padSize):
     return img_pad
 
 def score_ZNCC(patch1, patch2):
+    p1 = patch1.flatten()
+    p2 = patch2.flatten()
 
-    return 0
+    p1Norm = p1 - np.mean(p1) 
+    p1Norm = p1Norm / np.linalg.norm(p1Norm)
+
+    p2Norm = p2 - np.mean(p2)
+    p2Norm = p2Norm / np.linalg.norm(p2Norm)
+
+    return np.dot(p1Norm, p2Norm)
 
 def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
     match = []
 
-    img = padding(img1, 15)
+    # Padd images
+    i1Pd = padding(img1, patchSize)
+    i2Pd = padding(img2, patchSize)
+    
+    cv2.imshow("Pad 1", i1Pd)
+    cv2.imshow("Pad 2", i2Pd)
 
-    cv2.imshow("padding ", img)
-
-
+    print corners1[0]
+    p1 = i1Pd[corners1[2][0]: corners1[2][0]+patchSize, corners1[2][1]: corners1[2][1]+patchSize]
+    print p1
     return match
+
+'''
+    for c1 in corners1:
+        # get first patch
+        p1 = i1Pd[c1[0]-patchSize: c1[0]+patchSize, c1[1]-patchSize: c1[1]+patchSize]
+        for c2 in corners2:
+            # get second patch
+            p2 = i2Pd[c2[0]-patchSize: c2[0]+patchSize, c2[1]-patchSize: c2[1]+patchSize]
+            zncc = score_ZNCC(p1, p2)
+            print zncc
+            if (zncc > maxScoreThresh):
+                match.append((c1, c2))
+'''
+
 
 def hw3(i1, i2):
     c1, c1Show = harris(i1, 5, 5, .04, .005)
