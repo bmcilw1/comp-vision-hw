@@ -114,7 +114,14 @@ def draw_matches(img1, img2, corners1, corners2, matches):
     cv2.imshow('HW3', matchingImg)
     cv2.imwrite('cornerMatching.png', matchingImg)
 
+def compute_Homography(corners1, corners2, matches):
+    A = np.zeros((2*len(matches), 8))
+    b = np.zeros(2*len(matches))
+
+    return 0
+
 def hw4(i1, i2, c1, c2, matches):
+    H = compute_Homography(c1, c2, matches)
 
     return
 
