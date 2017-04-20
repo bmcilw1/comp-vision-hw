@@ -62,23 +62,22 @@ def matchKeyPts(img1, img2, patchSize, corners1, corners2, maxScoreThresh):
     i1Pd = padding(img1, patchSize)
     i2Pd = padding(img2, patchSize)
     
-    for c1 in corners1:
+    for i, c1 in enumerate(corners1):
         # get first patch
         p1 = i1Pd[c1[0]: c1[0]+patchSize, c1[1]: c1[1]+patchSize]
         bestScore = 0;
-        bestc2 = ();
-        for c2 in corners2:
+        bestPair = (0,0);
+        for j, c2 in enumerate(corners2):
             # get second patch
             p2 = i2Pd[c2[0]: c2[0]+patchSize, c2[1]: c2[1]+patchSize]
             zncc = score_ZNCC(p1, p2)
             if (zncc > bestScore):
-                bestc2 = c2
                 bestScore = zncc
+                bestPair = (i,j,bestScore)
 
         if (bestScore > maxScoreThresh):
-            match.append((c1, bestc2))
+            match.append(bestPair)
 
-    print match
     return match
 
 def hw3(i1, i2):
@@ -86,7 +85,9 @@ def hw3(i1, i2):
     c2 = extract_keypts_Harris(i2)
 
     # determine most similar corners
-    match = matchKeyPts(i1, i2, 15, c1, c2, .98)
+    matches = matchKeyPts(i1, i2, 15, c1, c2, .98)
+
+    draw_matches(i1, i2, c1, c2, matches)
 
     return
 
@@ -114,6 +115,7 @@ def draw_matches(img1, img2, corners1, corners2, matches):
     keyPts2 = construct_openCVKeyPtList(corners2)
     dmatch = construct_openCVDMatch(corners1, corners2, matches)
     matchingImg = cv2.drawMatches(img1, keyPts1, img2, keyPts2, dmatch, None)
+    cv2.imshow('HW3', matchingImg)
     cv2.imwrite('cornerMatching.png', matchingImg)
 
 
@@ -122,9 +124,6 @@ def draw_matches(img1, img2, corners1, corners2, matches):
 
 img1 = cv2.imread('hw3_4/TestingImages/goldengate-02.png')
 img2 = cv2.imread('hw3_4/TestingImages/goldengate-03.png')
-
-#cv2.imshow("Original img1", img1)
-#cv2.imshow("Original img2", img2)
 
 # convert images to grayscale
 img1 = init_image(img1)
