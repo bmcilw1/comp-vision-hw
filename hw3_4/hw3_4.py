@@ -148,7 +148,7 @@ def compute_Homography(corners1, corners2, matches):
     # Append constant 1, fix dimensions
     H = np.append(H, [1])
     H = np.reshape(H,(3,3))
-    print H
+
     return H
 
 def apply_transform(T, x, y):
@@ -164,15 +164,50 @@ def apply_transform(T, x, y):
     return xT, yT
 
 def compute_StitchDimension(img1, img2, H):
+    # Img1 min/max
+    rmin = 0
+    cmin = 0
+    rmax = img1.shape[0]
+    cmax = img1.shape[1]
+    
+    # Img2 min/max initialized
+    initX, initY = apply_transform(H, 0, 0)
+    rpmin = initX
+    cpmin = initY
+    rpmax = initX
+    cpmax = initY
 
-    return
+    for i in range(img2.shape[0]):
+        for j in range(img2.shape[1]):
+            # Get transformed x,y
+            xT, yT = apply_transform(H, i, j)
+
+            # If pixel beats min/max update min/max
+            if xT > rpmax:
+                rpmax = xT
+            if xT < rpmin:
+                rpmin = xT
+            if yT > cpmax:
+                cpmax = xT
+            if yT < cpmin:
+                cpmin = yT
+
+    rTmin = min(rmin, rpmin)
+    rTmax = max(rmax, rpmax)
+    cTmin = min(cmin, cpmin)
+    cTmax = max(cmax, cpmax)
+
+    dim = ([0,cTmax-cTmin],[0, rTmax-rTmin])
+    Tr = [-cTmin, -rTmin]
+    return dim, Tr 
 
 def hw4(i1, i2, c1, c2, matches):
     # Get H
     H = compute_Homography(c1, c2, matches)
 
     # Get shape
-    compute_StitchDimension(i1, i2, H)
+    dim, Tr = compute_StitchDimension(i1, i2, H)
+    print dim, Tr
 
     return
 
