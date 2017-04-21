@@ -135,11 +135,11 @@ def compute_Homography(corners1, corners2, matches):
         A[2*i,1] = y
         A[2*i,2] = 1
         A[2*i,6] = -x * xp
-        A[2*i,7] = -y * yp
+        A[2*i,7] = -y * xp
         A[2*i+1,3] = x
         A[2*i+1,4] = y
         A[2*i+1,5] = 1
-        A[2*i+1,6] = -x * xp
+        A[2*i+1,6] = -x * yp
         A[2*i+1,7] = -y * yp
 
     # Compute H
@@ -148,6 +148,7 @@ def compute_Homography(corners1, corners2, matches):
     # Append constant 1, fix dimensions
     H = np.append(H, [1])
     H = np.reshape(H,(3,3))
+    print H
 
     return H
 
