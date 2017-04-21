@@ -208,6 +208,8 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     img = np.zeros(newDimension, img1.dtype)
     print invH
 
+    print tran_x, tran_y, newDimension
+
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             # Get img1(x,y) and img2(xp,yp)
@@ -215,10 +217,10 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
             xp, yp = apply_transform(invH, x, y)
 
             # round down to integer
-            x = np.floor(x)
-            y = np.floor(y)
-            xp = np.floor(xp)
-            yp = np.floor(yp)
+            x = np.floor(x + 5*tran_x)
+            y = np.floor(y + 5*tran_y)
+            xp = np.floor(xp + 5*tran_x)
+            yp = np.floor(yp + 5*tran_y)
 
             if (0 <= x and x < img1.shape[1] and 
                 0 <= y and y < img1.shape[0] and
