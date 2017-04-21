@@ -121,10 +121,10 @@ def compute_Homography(corners1, corners2, matches):
     # Initalize A and B
     for i in range(len(matches)):
         # set (x,y) (x', y')
-        y = corners1[matches[i][0]][0]
-        x = corners1[matches[i][0]][1]
-        yp = corners1[matches[i][1]][0]
-        xp = corners1[matches[i][1]][1]
+        y = corners1[matches[i][1]][0]
+        x = corners1[matches[i][1]][1]
+        yp = corners1[matches[i][0]][0]
+        xp = corners1[matches[i][0]][1]
 
         # Set b as instructed in handout
         b[2*i] = xp
@@ -173,7 +173,6 @@ def compute_StitchDimension(img1, img2, H):
     
     # Img2 min/max initialized
     initX, initY = apply_transform(H, 0, 0)
-    print initX, initY
     rpmin = initX
     cpmin = initY
     rpmax = initX
@@ -199,18 +198,28 @@ def compute_StitchDimension(img1, img2, H):
     cTmin = min(cmin, cpmin)
     cTmax = max(cmax, cpmax)
 
-    dim = ([0, cTmax-cTmin],[0, rTmax-rTmin])
-    Tr = [-cTmin, -rTmin]
+    dim = (np.ceil(rTmax-rTmin), np.ceil(cTmax-cTmin))
 
-    return dim, Tr 
+    return dim, -cTmin, -rTmin 
+
+def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
+    # Get inverse
+    invH = np.linalg.inv(H)
+    print invH
+    #img = np.zeros(newDimension)
+
+
+    return
 
 def hw4(i1, i2, c1, c2, matches):
     # Get H
     H = compute_Homography(c1, c2, matches)
 
     # Get shape
-    dim, Tr = compute_StitchDimension(i1, i2, H)
-    print dim, Tr
+    dim, Tx, Ty = compute_StitchDimension(i1, i2, H)
+    print dim, Tx, Ty
+
+    stitch_images(i1, i2, H, Tx, Ty, dim)
 
     return
 
