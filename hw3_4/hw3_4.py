@@ -228,7 +228,9 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
                 0 <= yp and yp < img2.shape[0]):
 
                 # In both images, take mean
-                img[i,j] = (img1[y,x] + img2[yp,xp]) / 2
+                #img[i,j] = (img1[y,x] + img2[yp,xp]) / 2
+                #img[i,j] = img1[yp,xp]
+                img[i,j] = img2[yp,xp]
             elif (0 <= x and x < img1.shape[1] and 
                   0 <= y and y < img1.shape[0]):
 
