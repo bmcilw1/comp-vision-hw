@@ -206,10 +206,39 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     # Get inverse
     invH = np.linalg.inv(H)
     print invH
-    #img = np.zeros(newDimension)
+    img = np.zeros(newDimension)
 
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            # Get img1(x,y) and img2(xp,yp)
+            x, y = apply_transform(invH, i, j)
+            xp, yp = apply_transform(invH, x, y)
 
-    return
+            # round down to integer
+            x = np.floor(x)
+            y = np.floor(y)
+            xp = np.floor(xp)
+            yp = np.floor(yp)
+
+            if (0 <= x and x < img1.shape[1] and 
+                0 <= y and y < img1.shape[0] and
+                0 <= xp and xp < img2.shape[1] and 
+                0 <= yp and yp < img2.shape[0]):
+
+                img[i,j] = img1[y,x]
+            elif (0 <= x and x < img1.shape[1] and 
+                  0 <= y and y < img1.shape[0]):
+
+                img[i,j] = img1[y,x]
+            elif (0 <= xp and xp < img2.shape[1] and 
+                  0 <= yp and yp < img2.shape[0]):
+                
+                img[i,j] = img2[yp,xp]
+
+    # show final image
+    cv2.imshow("Hw4", img)
+
+    return img
 
 def hw4(i1, i2, c1, c2, matches):
     # Get H
