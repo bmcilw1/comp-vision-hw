@@ -112,16 +112,67 @@ def draw_matches(img1, img2, corners1, corners2, matches):
     dmatch = construct_openCVDMatch(corners1, corners2, matches)
     matchingImg = cv2.drawMatches(img1, keyPts1, img2, keyPts2, dmatch, None)
     cv2.imshow('HW3', matchingImg)
-    cv2.imwrite('cornerMatching.png', matchingImg)
+    cv2.imwrite('hw3_4/cornerMatching.png', matchingImg)
 
 def compute_Homography(corners1, corners2, matches):
     A = np.zeros((2*len(matches), 8))
     b = np.zeros(2*len(matches))
 
-    return 0
+    # Initalize A and B
+    for i in range(len(matches)):
+        # set (x,y) (x', y')
+        y = corners1[matches[i][0]][0]
+        x = corners1[matches[i][0]][1]
+        yp = corners1[matches[i][1]][0]
+        xp = corners1[matches[i][1]][1]
+
+        # Set b as instructed in handout
+        b[2*i] = xp
+        b[2*i+1] = yp
+
+        # Set up A as in demo
+        A[2*i,0] = x
+        A[2*i,1] = y
+        A[2*i,2] = 1
+        A[2*i,6] = -x * xp
+        A[2*i,7] = -y * yp
+        A[2*i+1,3] = x
+        A[2*i+1,4] = y
+        A[2*i+1,5] = 1
+        A[2*i+1,6] = -x * xp
+        A[2*i+1,7] = -y * yp
+
+    # Compute H
+    H = np.linalg.lstsq(A, b)[0]
+
+    # Append constant 1, fix dimensions
+    H = np.append(H, [1])
+    H = np.reshape(H,(3,3))
+    print H
+    return H
+
+def apply_transform(T, x, y):
+    # Compute (u,v,w)
+    u = T[0,0]*x + T[0,1]*y + T[0,2]
+    v = T[1,0]*x + T[1,1]*y + T[1,2]
+    w = T[2,0]*x + T[2,1]*y + T[2,2]
+
+    # Use (u,v,w) to return (x',y') transform
+    xT = u / w
+    yT = v / w
+
+    return xT, yT
+
+def compute_StitchDimension(img1, img2, H):
+
+    return
 
 def hw4(i1, i2, c1, c2, matches):
+    # Get H
     H = compute_Homography(c1, c2, matches)
+
+    # Get shape
+    compute_StitchDimension(i1, i2, H)
 
     return
 
