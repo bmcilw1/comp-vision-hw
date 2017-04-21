@@ -205,13 +205,13 @@ def compute_StitchDimension(img1, img2, H):
 def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     # Get inverse
     invH = np.linalg.inv(H)
+    img = np.zeros(newDimension, img1.dtype)
     print invH
-    img = np.zeros(newDimension)
 
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             # Get img1(x,y) and img2(xp,yp)
-            x, y = apply_transform(invH, i, j)
+            x, y = apply_transform(invH, j, i)
             xp, yp = apply_transform(invH, x, y)
 
             # round down to integer
