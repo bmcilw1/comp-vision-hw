@@ -121,8 +121,8 @@ def compute_Homography(corners1, corners2, matches):
     # Initalize A and B
     for i in range(len(matches)):
         # set (x,y) (x', y')
-        y = corners1[matches[i][1]][0]
-        x = corners1[matches[i][1]][1]
+        y = corners2[matches[i][1]][0]
+        x = corners2[matches[i][1]][1]
         yp = corners1[matches[i][0]][0]
         xp = corners1[matches[i][0]][1]
 
