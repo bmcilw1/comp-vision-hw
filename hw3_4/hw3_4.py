@@ -172,11 +172,11 @@ def compute_StitchDimension(img1, img2, H):
     cmax = img1.shape[1]
     
     # Img2 min/max initialized
-    initX, initY = apply_transform(H, 0, 0)
-    rpmin = initX
-    cpmin = initY
-    rpmax = initX
-    cpmax = initY
+    initY, initX = apply_transform(H, 0, 0)
+    rpmin = initY
+    cpmin = initX
+    rpmax = initY
+    cpmax = initX
 
     for i in range(img2.shape[0]):
         for j in range(img2.shape[1]):
