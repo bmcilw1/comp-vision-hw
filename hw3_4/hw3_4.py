@@ -130,15 +130,15 @@ def compute_Homography(corners1, corners2, matches):
         b[2*i] = xp
         b[2*i+1] = yp
 
-        # Set up A as in demo
+        # Set up A see lecture 21 pg 28
         A[2*i,0] = x
         A[2*i,1] = y
         A[2*i,2] = 1
-        A[2*i,6] = -x * xp
-        A[2*i,7] = -y * xp
         A[2*i+1,3] = x
         A[2*i+1,4] = y
         A[2*i+1,5] = 1
+        A[2*i,6] = -x * xp
+        A[2*i,7] = -y * xp
         A[2*i+1,6] = -x * yp
         A[2*i+1,7] = -y * yp
 
@@ -173,6 +173,7 @@ def compute_StitchDimension(img1, img2, H):
     
     # Img2 min/max initialized
     initX, initY = apply_transform(H, 0, 0)
+    print initX, initY
     rpmin = initX
     cpmin = initY
     rpmax = initX
@@ -198,8 +199,9 @@ def compute_StitchDimension(img1, img2, H):
     cTmin = min(cmin, cpmin)
     cTmax = max(cmax, cpmax)
 
-    dim = ([0,cTmax-cTmin],[0, rTmax-rTmin])
+    dim = ([0, cTmax-cTmin],[0, rTmax-rTmin])
     Tr = [-cTmin, -rTmin]
+
     return dim, Tr 
 
 def hw4(i1, i2, c1, c2, matches):
