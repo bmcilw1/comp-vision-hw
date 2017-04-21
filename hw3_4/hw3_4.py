@@ -178,6 +178,7 @@ def compute_StitchDimension(img1, img2, H):
     rpmax = initY
     cpmax = initX
 
+    # Get min/max of img2 on img1 coordinate system
     for i in range(img2.shape[0]):
         for j in range(img2.shape[1]):
             # Get transformed x,y
@@ -217,6 +218,8 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
             xp, yp = apply_transform(invH, x, y)
 
             # round down to integer
+            # was too far right, so I added 5*transform to fix
+            # Why?? Is H and invH not correct?
             x = np.floor(x + 5*tran_x)
             y = np.floor(y + 5*tran_y)
             xp = np.floor(xp + 5*tran_x)
@@ -228,9 +231,9 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
                 0 <= yp and yp < img2.shape[0]):
 
                 # In both images, take mean
-                #img[i,j] = (img1[y,x] + img2[yp,xp]) / 2
+                img[i,j] = (img1[y,x] + img2[yp,xp]) / 2
                 #img[i,j] = img1[yp,xp]
-                img[i,j] = img2[yp,xp]
+                #img[i,j] = img2[yp,xp]
             elif (0 <= x and x < img1.shape[1] and 
                   0 <= y and y < img1.shape[0]):
 
