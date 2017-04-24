@@ -213,17 +213,13 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
 
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
+            # round down to integer
+            x = np.floor(j + tran_x)
+            y = np.floor(i + tran_y)
+
             # Get img1(x,y) and img2(xp,yp)
-            x, y = apply_transform(invH, j, i)
             xp, yp = apply_transform(invH, x, y)
 
-            # round down to integer
-            # was too far right, so I added 5*transform to fix
-            # Why?? Is H and invH not correct?
-            x = np.floor(x + 5*tran_x)
-            y = np.floor(y + 5*tran_y)
-            xp = np.floor(xp + 5*tran_x)
-            yp = np.floor(yp + 5*tran_y)
 
             if (0 <= x and x < img1.shape[1] and 
                 0 <= y and y < img1.shape[0] and
@@ -231,7 +227,7 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
                 0 <= yp and yp < img2.shape[0]):
 
                 # In both images, take mean
-                img[i,j] = (img1[y,x] + img2[yp,xp]) / 2
+                img[i,j] = img1[y,x]/2 + img2[yp,xp]/2
                 #img[i,j] = img1[yp,xp]
                 #img[i,j] = img2[yp,xp]
             elif (0 <= x and x < img1.shape[1] and 
