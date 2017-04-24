@@ -236,15 +236,13 @@ def compute_StitchDimension(img1, img2, H):
 
     dim = (np.ceil(rTmax-rTmin), np.ceil(cTmax-cTmin))
 
-    return dim, -cTmin, -rTmin 
+    return dim, cTmin, rTmin 
 
 def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     # Get inverse
     invH = np.linalg.inv(H)
     img = np.zeros(newDimension, img1.dtype)
     print invH
-
-    print tran_x, tran_y, newDimension
 
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
@@ -255,13 +253,13 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
             # Get img1(x,y) and img2(xp,yp)
             xp, yp = apply_transform(invH, x, y)
 
-
             if (0 <= x and x < img1.shape[1] and 
                 0 <= y and y < img1.shape[0] and
                 0 <= xp and xp < img2.shape[1] and 
                 0 <= yp and yp < img2.shape[0]):
 
                 # In both images, take mean
+                #img[i,j] = (int(img1[y,x]) + int(img2[yp,xp]))/2
                 img[i,j] = img1[y,x]/2 + img2[yp,xp]/2
             elif (0 <= x and x < img1.shape[1] and 
                   0 <= y and y < img1.shape[0]):
