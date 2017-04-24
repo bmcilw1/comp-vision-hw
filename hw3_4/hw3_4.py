@@ -249,8 +249,8 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             # round down to integer
-            x = np.floor(j - tran_x)
-            y = np.floor(i - tran_y)
+            x = np.floor(j + tran_x)
+            y = np.floor(i + tran_y)
 
             # Get img1(x,y) and img2(xp,yp)
             xp, yp = apply_transform(invH, x, y)
