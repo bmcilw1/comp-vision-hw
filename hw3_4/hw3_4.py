@@ -180,19 +180,54 @@ def compute_StitchDimension(img1, img2, H):
 
     # Get min/max of img2 on img1 coordinate system
     for i in range(img2.shape[0]):
-        for j in range(img2.shape[1]):
-            # Get transformed x,y
-            xT, yT = apply_transform(H, i, j)
+        # Get transformed x,y
+        xT, yT = apply_transform(H, 0, i)
+        xT2, yT2 = apply_transform(H, img2.shape[1]-1, i)
 
-            # If pixel beats min/max update min/max
-            if xT > rpmax:
-                rpmax = xT
-            if xT < rpmin:
-                rpmin = xT
-            if yT > cpmax:
-                cpmax = xT
-            if yT < cpmin:
-                cpmin = yT
+        # If pixel beats min/max update min/max
+        # check close border
+        if xT > rpmax:
+            rpmax = xT
+        if xT < rpmin:
+            rpmin = xT
+        if yT > cpmax:
+            cpmax = xT
+        if yT < cpmin:
+            cpmin = yT
+
+        # check far border
+        if xT2 > rpmax:
+            rpmax = xT2
+        if xT2 < rpmin:
+            rpmin = xT2
+        if yT2 > cpmax:
+            cpmax = xT2
+        if yT2 < cpmin:
+            cpmin = yT2
+    for i in range(img2.shape[1]):
+        # Get transformed x,y
+        xT, yT = apply_transform(H, i, 0)
+        xT2, yT2 = apply_transform(H, i, img2.shape[0]-1)
+
+        # If pixel beats min/max update min/max
+        if xT > rpmax:
+            rpmax = xT
+        if xT < rpmin:
+            rpmin = xT
+        if yT > cpmax:
+            cpmax = xT
+        if yT < cpmin:
+            cpmin = yT
+
+        # check far border
+        if xT2 > rpmax:
+            rpmax = xT2
+        if xT2 < rpmin:
+            rpmin = xT2
+        if yT2 > cpmax:
+            cpmax = xT2
+        if yT2 < cpmin:
+            cpmin = yT2
 
     rTmin = min(rmin, rpmin)
     rTmax = max(rmax, rpmax)
@@ -214,8 +249,8 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             # round down to integer
-            x = np.floor(j + tran_x)
-            y = np.floor(i + tran_y)
+            x = np.floor(j - tran_x)
+            y = np.floor(i - tran_y)
 
             # Get img1(x,y) and img2(xp,yp)
             xp, yp = apply_transform(invH, x, y)
@@ -228,8 +263,6 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
 
                 # In both images, take mean
                 img[i,j] = img1[y,x]/2 + img2[yp,xp]/2
-                #img[i,j] = img1[yp,xp]
-                #img[i,j] = img2[yp,xp]
             elif (0 <= x and x < img1.shape[1] and 
                   0 <= y and y < img1.shape[0]):
 
