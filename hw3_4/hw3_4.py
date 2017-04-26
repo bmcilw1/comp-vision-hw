@@ -173,10 +173,10 @@ def compute_StitchDimension(img1, img2, H):
     
     # Img2 min/max initialized
     initY, initX = apply_transform(H, 0, 0)
-    rpmin = initY
-    cpmin = initX
-    rpmax = initY
-    cpmax = initX
+    rpmin = initX
+    cpmin = initY
+    rpmax = initX
+    cpmax = initY
 
     # Get min/max of img2 on img1 coordinate system
     for i in range(img2.shape[0]):
@@ -247,6 +247,8 @@ def stitch_images(img1, img2, H, tran_x, tran_y, newDimension):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             # More readable
+            #x = j + tran_x
+            #y = i + tran_y
             x = j
             y = i
 
@@ -283,6 +285,7 @@ def hw4(i1, i2, c1, c2, matches):
 
     # Get shape
     dim, Tx, Ty = compute_StitchDimension(i1, i2, H)
+    print "dim"
     print dim, Tx, Ty
 
     stitch_images(i1, i2, H, Tx, Ty, dim)
