@@ -27,7 +27,40 @@ def generalFilter(img):
     gauss = cv2.filter2D(img_gray, -1, Gsigma)
     return gauss
 
-def markObstacles(img, gauss, edges, thresh):
+# Visual for showing detected obstacles in image
+def markObstaclesRed(img, gauss, edges, thresh):
+    img = img.copy()
+
+    # Shade regions close enough
+    img[np.where(gauss > thresh)] = [0,0,255]
+
+    # Fill in shaded regions according to edge image
+    y, x, z = img.shape
+    for i in range(1, x-1):
+        for j in range(1, y-1):
+            if img[j,i,2] == 255:
+                if edges[j+1, i  ] < 1 and gauss[j+1, i  ] != 0:
+                    img [j+1, i  ] = [0,0,255]
+                if edges[j  , i+1] < 1 and gauss[j  , i+1] != 0:
+                    img [j  , i+1] = [0,0,255]
+                if edges[j+1, i+1] < 1 and gauss[j+1, i+1] != 0:
+                    img [j+1, i+1] = [0,0,255]
+
+    # Fill in shaded regions according to edge image - going backwards
+    for i in range(x-1, 1, -1):
+        for j in range(y-1, 1, -1):
+            if img[j,i,2] == 255:
+                if edges[j-1, i  ] < 1 and gauss[j-1, i  ] != 0:
+                    img [j-1, i  ] = [0,0,255]
+                if edges[j  , i-1] < 1 and gauss[j  , i-1] != 0:
+                    img [j  , i-1] = [0,0,255]
+                if edges[j-1, i-1] < 1 and gauss[j-1, i-1] != 0:
+                    img [j-1, i-1] = [0,0,255]
+
+    return img
+
+# Shade along vertical max
+def markObstaclesGray(img, gauss, edges, thresh):
     img = img.copy()
     y, x, z = img.shape
 
@@ -86,7 +119,7 @@ cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 # Filter out floor
 
 # Mark obstacles
-obst = markObstacles(img, gauss, edges, thresh)
+obst = markObstaclesRed(img, gauss, edges, thresh)
 cv2.imshow('Marked obstacles', obst)
 cv2.imwrite('course_proj/MarkedObstacles.png', edges)
 
