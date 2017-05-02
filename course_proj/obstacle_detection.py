@@ -22,6 +22,17 @@ def GaussianFilter(sigma):
 
     return mat
 
+def generalFilter(img):
+    Gsigma = GaussianFilter(1)
+    gauss = cv2.filter2D(img_gray, -1, Gsigma)
+    return gauss
+
+def markObstacles(img, gauss):
+    img = img.copy()
+    img[np.where(gauss > 100)] = [0,0,255]
+    return img
+
+
 # MAIN
 ##################################################################
 img = cv2.imread('course_proj/images/KinectSnapshot-08-36-54.png')
@@ -34,8 +45,7 @@ cv2.imshow('Original image', img)
 cv2.imwrite('course_proj/Originalimg.png', img)
 
 # Filter noise
-Gsigma = GaussianFilter(1)
-gauss = cv2.filter2D(img_gray, -1, Gsigma)
+gauss = generalFilter(img_gray)
 cv2.imshow('Gaussian filtered image', gauss)
 cv2.imwrite('course_proj/Gaussianfilteredimg.png', gauss)
 
@@ -45,8 +55,8 @@ cv2.imshow('Canny edge detection', edges)
 cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 
 # Filter out floor
-
-# Mark obstacles
+obst = markObstacles(img, gauss)
+cv2.imshow('Marked obstacles', obst)
 
 # Create 2D map of obstacle-free space
 
