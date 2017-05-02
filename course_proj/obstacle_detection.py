@@ -45,6 +45,17 @@ def markObstacles(img, gauss, edges, thresh):
                 if edges[j+1, i+1] < 1 and gauss[j+1, i+1] != 0:
                     img [j+1, i+1] = [0,0,255]
 
+    # Fill in shaded regions according to edge image - going backwards
+    for i in range(x-1, 1, -1):
+        for j in range(y-1, 1, -1):
+            if img[j,i,2] == 255:
+                if edges[j-1, i  ] < 1 and gauss[j-1, i  ] != 0:
+                    img [j-1, i  ] = [0,0,255]
+                if edges[j  , i-1] < 1 and gauss[j  , i-1] != 0:
+                    img [j  , i-1] = [0,0,255]
+                if edges[j-1, i-1] < 1 and gauss[j-1, i-1] != 0:
+                    img [j-1, i-1] = [0,0,255]
+
     return img
 
 # MAIN
@@ -52,7 +63,7 @@ def markObstacles(img, gauss, edges, thresh):
 img = cv2.imread('course_proj/images/KinectSnapshot-08-36-54.png')
 
 # Threshold closeness to be considered as a potential obstacle
-thresh = 100
+thresh = 150
 
 # Convert to grayscale
 img_gray = grayscale(img)
