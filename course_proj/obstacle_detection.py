@@ -31,15 +31,18 @@ img_gray = grayscale(img)
 
 # Show initial image
 cv2.imshow('Original image', img)
+cv2.imwrite('course_proj/Originalimg.png', img)
 
 # Filter noise
-Gsigma = GaussianFilter(2)
+Gsigma = GaussianFilter(1)
 gauss = cv2.filter2D(img_gray, -1, Gsigma)
 cv2.imshow('Gaussian filtered image', gauss)
+cv2.imwrite('course_proj/Gaussianfilteredimg.png', gauss)
 
 # Get edge image
 edges = cv2.Canny(gauss, 100, 100)
 cv2.imshow('Canny edge detection', edges)
+cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 
 # Filter out floor
 
