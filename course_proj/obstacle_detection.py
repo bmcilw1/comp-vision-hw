@@ -27,15 +27,23 @@ def generalFilter(img):
     gauss = cv2.filter2D(img_gray, -1, Gsigma)
     return gauss
 
-def markObstacles(img, gauss):
+def markObstacles(img, gauss, edges, thresh):
     img = img.copy()
-    img[np.where(gauss > 100)] = [0,0,255]
+
+    # Shade regions close enough
+    img[np.where(gauss > thresh)] = [0,0,255]
+
+    # Fill in shaded regions according to edge image
+
     return img
 
 
 # MAIN
 ##################################################################
 img = cv2.imread('course_proj/images/KinectSnapshot-08-36-54.png')
+
+# Threshold closeness to be considered as a potential obstacle
+thresh = 150
 
 # Convert to grayscale
 img_gray = grayscale(img)
@@ -55,7 +63,9 @@ cv2.imshow('Canny edge detection', edges)
 cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 
 # Filter out floor
-obst = markObstacles(img, gauss)
+
+# Mark obstacles
+obst = markObstacles(img, gauss, edges, thresh)
 cv2.imshow('Marked obstacles', obst)
 cv2.imwrite('course_proj/MarkedObstacles.png', edges)
 
