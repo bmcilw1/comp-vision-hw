@@ -57,6 +57,7 @@ cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 # Filter out floor
 obst = markObstacles(img, gauss)
 cv2.imshow('Marked obstacles', obst)
+cv2.imwrite('course_proj/MarkedObstacles.png', edges)
 
 # Create 2D map of obstacle-free space
 
