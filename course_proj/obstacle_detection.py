@@ -29,34 +29,35 @@ def generalFilter(img):
 
 def markObstacles(img, gauss, edges, thresh):
     img = img.copy()
-
-    # Shade regions close enough
-    img[np.where(gauss > thresh)] = [0,0,255]
+    y, x, z = img.shape
 
     # Fill in shaded regions according to edge image
-    y, x, z = img.shape
     for i in range(1, x-1):
         for j in range(1, y-1):
-            if img[j,i,2] == 255:
-                if edges[j+1, i  ] < 1 and gauss[j+1, i  ] != 0:
-                    img [j+1, i  ] = [0,0,255]
-                if edges[j  , i+1] < 1 and gauss[j  , i+1] != 0:
-                    img [j  , i+1] = [0,0,255]
-                if edges[j+1, i+1] < 1 and gauss[j+1, i+1] != 0:
-                    img [j+1, i+1] = [0,0,255]
+            if gauss[j,i] > thresh:
+                if edges [j,i] == 1:
+                    break
+                if edges [j+1,i] < 1 and gauss[j+1,i] != 0:
+                    gauss[j,i] = gauss[j+1,i] = max(gauss[j+1,i], gauss[j,i])
+                if edges [j,i+1] < 1 and gauss[j,i+1] != 0:
+                    gauss[j,i] = gauss[j+1,i] = max(gauss[j,i+1], gauss[j,i])
+                if edges [j+1,i+1] < 1 and gauss[j+1,i+1] != 0:
+                    gauss[j,i] = gauss[j+1,i] = max(gauss[j+1,i+1], gauss[j,i])
 
     # Fill in shaded regions according to edge image - going backwards
     for i in range(x-1, 1, -1):
         for j in range(y-1, 1, -1):
-            if img[j,i,2] == 255:
-                if edges[j-1, i  ] < 1 and gauss[j-1, i  ] != 0:
-                    img [j-1, i  ] = [0,0,255]
-                if edges[j  , i-1] < 1 and gauss[j  , i-1] != 0:
-                    img [j  , i-1] = [0,0,255]
-                if edges[j-1, i-1] < 1 and gauss[j-1, i-1] != 0:
-                    img [j-1, i-1] = [0,0,255]
+            if gauss[j,i] > thresh:
+                if edges [j,i] == 1:
+                    break
+                if edges [j-1,i] < 1 and gauss[j-1,i] != 0:
+                    gauss[j,i] = gauss[j-1,i] = max(gauss[j-1,i], gauss[j,i])
+                if edges [j,i-1] < 1 and gauss[j  , i-1] != 0:
+                    gauss[j,i] = gauss[j-1,i] = max(gauss[j,i-1], gauss[j,i])
+                if edges [j-1,i-1] < 1 and gauss[j-1,i-1] != 0:
+                    gauss[j,i] = gauss[j-1,i] = max(gauss[j-1,i-1], gauss[j,i])
 
-    return img
+    return gauss
 
 # MAIN
 ##################################################################
