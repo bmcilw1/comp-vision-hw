@@ -92,6 +92,20 @@ def markObstaclesGray(img, gauss, edges, thresh):
 
     return gauss
 
+# Return 2D map of free space
+def get2DMap(filtered):
+    # Get max of columns
+    max_vector = np.amax(filtered, axis=0)
+
+    # Prep 2D map
+    mp = np.zeros((255, filtered.shape[1]))
+
+    # Set max value along axis
+    for i in range(0, filtered.shape[1]):
+       mp.itemset((max_vector[i],i), 255)
+
+    return mp
+
 # MAIN
 ##################################################################
 img = cv2.imread('course_proj/images/KinectSnapshot-08-36-54.png')
@@ -121,9 +135,12 @@ cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 # Mark obstacles
 obst = markObstaclesRed(img, gauss, edges, thresh)
 cv2.imshow('Marked obstacles', obst)
-cv2.imwrite('course_proj/MarkedObstacles.png', edges)
+cv2.imwrite('course_proj/MarkedObstacles.png', obst)
 
 # Create 2D map of obstacle-free space
+mp = get2DMap(gauss)
+cv2.imshow('2D Map', mp)
+cv2.imwrite('course_proj/Map2D.png', mp)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
