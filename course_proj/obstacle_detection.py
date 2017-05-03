@@ -132,15 +132,16 @@ cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 
 # Filter out floor
 
-# Mark obstacles
-obst = markObstaclesRed(img, gauss, edges, thresh)
-cv2.imshow('Marked obstacles', obst)
-cv2.imwrite('course_proj/MarkedObstacles.png', obst)
 
 # Create 2D map of obstacle-free space
 mp = get2DMap(gauss)
 cv2.imshow('2D Map', mp)
 cv2.imwrite('course_proj/Map2D.png', mp)
+
+# Visually Mark obstacles
+obst = markObstaclesRed(img, gauss, edges, thresh)
+cv2.imshow('Marked obstacles', obst)
+cv2.imwrite('course_proj/MarkedObstacles.png', obst)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
