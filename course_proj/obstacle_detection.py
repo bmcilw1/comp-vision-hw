@@ -65,9 +65,9 @@ def filterFloor(gauss):
     floorless[((3*np.pi/8 < orient) & (orient < 5*np.pi/8)) | ((-5*np.pi/8 < orient) & (orient < -3*np.pi/8))] = 0
 
     # Remove the left-over stripes
-    kernel = np.matrix([[.5],
-                        [.5]])
-    floorless = cv2.erode(floorless,kernel,iterations = 1)
+    #kernel = np.matrix([[.5],
+    #                    [.5]])
+    #floorless = cv2.erode(floorless,kernel,iterations = 1)
 
     return floorless
 
