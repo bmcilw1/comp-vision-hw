@@ -49,7 +49,9 @@ def sobel(img):
     Iyn = cv2.normalize(src=Iy, dst=Iyn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
 
     cv2.imshow('Ix_Normalized', Ixn)
+    cv2.imwrite('course_proj/Ix_Normalized.png', Ixn)
     cv2.imshow('Iy_Normalized', Iyn)
+    cv2.imwrite('course_proj/Iy_Normalized.png', Iyn)
 
     return Ix, Iy
 
@@ -119,7 +121,6 @@ def markObstaclesRed(img, gauss, edges, thresh):
 def get2DMap(filtered, thresh):
     # Get max of columns
     max_vector = np.amax(filtered, axis=0)
-    print max_vector
 
     # Smooth local max according to neighbors
     max_vector = cv2.medianBlur(max_vector, 5)
