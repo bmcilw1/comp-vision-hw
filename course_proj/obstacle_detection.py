@@ -28,7 +28,7 @@ def generalFilter(img_gray, sigma):
     gauss = cv2.filter2D(img_gray, -1, Gsigma)
     return gauss
 
-def sobel(img):
+def gradient(img):
     Sx = np.matrix([[1, 0, -1],
                     [2, 0, -2],
                     [1, 0, -1]])
@@ -40,6 +40,8 @@ def sobel(img):
     # Ix = img * Sx
     Ix = cv2.filter2D(img, -1, Sx)
     Iy = cv2.filter2D(img, -1, Sy)
+
+    orient = np.arctan2(Iy,Ix)
 
     Ixn = np.zeros(Ix.shape)
     Iyn = np.zeros(Iy.shape)
@@ -53,23 +55,24 @@ def sobel(img):
     cv2.imshow('Iy_Normalized', Iyn)
     cv2.imwrite('course_proj/Iy_Normalized.png', Iyn)
 
-    return Ix, Iy
+    return orient
 
 # Remove floor
 def filterFloor(gauss):
     floorless = gauss.copy()
 
     # Get gradients, and orientation
-    Ix, Iy = sobel(gauss)
-    orient = np.arctan2(Iy,Ix)
+    orient = gradient(gauss)
     
-    # Attempt 1 - if the normal of the gradient is pointing vertically, remove it
+    # Attempt 1 - if the gradient is pointing vertically, remove it
     floorless[((3*np.pi/8 < orient) & (orient < 5*np.pi/8)) | ((-5*np.pi/8 < orient) & (orient < -3*np.pi/8))] = 0
 
     # Remove the left-over stripes
     #kernel = np.matrix([[.5],
     #                    [.5]])
     #floorless = cv2.erode(floorless,kernel,iterations = 1)
+
+    # Attempt 2 - Calculate normal, if vertical, remove
 
     return floorless
 
