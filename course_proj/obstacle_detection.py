@@ -22,10 +22,16 @@ def GaussianFilter(sigma):
 
     return mat
 
+# Remove some noise for Canny edge detection
 def generalFilter(img):
     Gsigma = GaussianFilter(1)
     gauss = cv2.filter2D(img_gray, -1, Gsigma)
     return gauss
+
+# Remove floor
+def filterFloor(gauss):
+    floorless = gauss.copy()
+    return floorless
 
 # Visual for showing detected obstacles in image
 def markObstaclesRed(img, gauss, edges, thresh):
@@ -110,15 +116,17 @@ cv2.imshow('Canny edge detection', edges)
 cv2.imwrite('course_proj/Cannyedgedetection.png', edges)
 
 # Filter out floor
-
+filter_img = filterFloor(gauss)
+cv2.imshow('Removed Floor', filter_img)
+cv2.imwrite('course_proj/FilteredFloor.png', filter_img)
 
 # Create 2D map of obstacle-free space
-mp = get2DMap(gauss)
+mp = get2DMap(filter_img)
 cv2.imshow('2D Map', mp)
 cv2.imwrite('course_proj/Map2D.png', mp)
 
 # Visually Mark obstacles
-obst = markObstaclesRed(img, gauss, edges, thresh)
+obst = markObstaclesRed(img, filter_img, edges, thresh)
 cv2.imshow('Marked obstacles', obst)
 cv2.imwrite('course_proj/MarkedObstacles.png', obst)
 
