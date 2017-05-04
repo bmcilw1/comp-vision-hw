@@ -59,15 +59,14 @@ def filterFloor(gauss):
 
     # Get gradients, and orientation
     Ix, Iy = sobel(gauss)
-    mag = np.sqrt(Ix*Ix + Iy*Iy)
     orient = np.arctan2(Iy,Ix)
     
     # Attempt 1 - if the normal of the gradient is pointing vertically, remove it
     floorless[((3*np.pi/8 < orient) & (orient < 5*np.pi/8)) | ((-5*np.pi/8 < orient) & (orient < -3*np.pi/8))] = 0
 
     # Remove the left-over stripes
-    kernel = np.matrix([[1],
-                        [1]])
+    kernel = np.matrix([[.5],
+                        [.5]])
     floorless = cv2.erode(floorless,kernel,iterations = 1)
 
     return floorless
@@ -120,6 +119,10 @@ def markObstaclesRed(img, gauss, edges, thresh):
 def get2DMap(filtered, thresh):
     # Get max of columns
     max_vector = np.amax(filtered, axis=0)
+    print max_vector
+
+    # Smooth local max according to neighbors
+    max_vector = cv2.medianBlur(max_vector, 5)
 
     # Prep 2D map
     mp = np.zeros((256, filtered.shape[1]))
