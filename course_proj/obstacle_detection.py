@@ -5,6 +5,7 @@
 
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 def grayscale(img):
     return cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -57,22 +58,33 @@ def gradient(img):
 
     return orient
 
+def calcNormal(img):
+    normal = img.copy()
+    
+    return normal
+
 # Remove floor
 def filterFloor(gauss):
     floorless = gauss.copy()
 
-    # Get gradients, and orientation
+    # Attempt 1 - if the gradient is pointing vertically, remove it
     orient = gradient(gauss)
     
-    # Attempt 1 - if the gradient is pointing vertically, remove it
     floorless[((3*np.pi/8 < orient) & (orient < 5*np.pi/8)) | ((-5*np.pi/8 < orient) & (orient < -3*np.pi/8))] = 0
 
-    # Remove the left-over stripes
-    #kernel = np.matrix([[.5],
-    #                    [.5]])
-    #floorless = cv2.erode(floorless,kernel,iterations = 1)
+    # Lessen/Remove the left-over stripes
+    kernel = np.matrix([[.5],
+                        [.5]])
+    floorless = cv2.erode(floorless,kernel,iterations = 1)
 
     # Attempt 2 - Calculate normal, if vertical, remove
+    # Problem 1 - how to calculate normal?
+    # Problem 2 - how to define the ground plane direction of normal
+    #              - Best to do with training 
+    # Problem 3 - how to generate sufficient training data?
+    #              - Simply not feasable within the scope and 
+    #                available resources of this project. 
+    #                Too much training data to collect would be required
 
     return floorless
 
