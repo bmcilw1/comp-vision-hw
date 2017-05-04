@@ -23,14 +23,18 @@ def GaussianFilter(sigma):
     return mat
 
 # Remove some noise for Canny edge detection
-def generalFilter(img):
+def generalFilter(img_gray):
     Gsigma = GaussianFilter(1)
     gauss = cv2.filter2D(img_gray, -1, Gsigma)
     return gauss
 
 # Remove floor
 def filterFloor(gauss):
-    floorless = gauss.copy()
+    floor = cv2.imread('course_proj/Floor.png')
+    floor = grayscale(floor)
+
+    floorless = cv2.filter2D(gauss, 0, floor)
+
     return floorless
 
 # Visual for showing detected obstacles in image
@@ -83,7 +87,7 @@ def get2DMap(filtered):
     max_vector = np.amax(filtered, axis=0)
 
     # Prep 2D map
-    mp = np.zeros((255, filtered.shape[1]))
+    mp = np.zeros((256, filtered.shape[1]))
 
     # Set max value along axis
     for i in range(0, filtered.shape[1]):
