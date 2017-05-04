@@ -23,17 +23,52 @@ def GaussianFilter(sigma):
     return mat
 
 # Remove some noise for Canny edge detection
-def generalFilter(img_gray):
-    Gsigma = GaussianFilter(1)
+def generalFilter(img_gray, sigma):
+    Gsigma = GaussianFilter(sigma)
     gauss = cv2.filter2D(img_gray, -1, Gsigma)
     return gauss
 
+def sobel(img):
+    Sx = np.matrix([[1, 0, -1],
+                    [2, 0, -2],
+                    [1, 0, -1]])
+
+    Sy = np.matrix([[1, 2, 1],
+                    [0, 0, 0],
+                    [-1, -2, -1]])
+    
+    # Ix = img * Sx
+    Ix = cv2.filter2D(img, -1, Sx)
+    Iy = cv2.filter2D(img, -1, Sy)
+
+    Ixn = np.zeros(Ix.shape)
+    Iyn = np.zeros(Iy.shape)
+
+    # Normalize for presentation
+    Ixn = cv2.normalize(src=Ix, dst=Ixn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+    Iyn = cv2.normalize(src=Iy, dst=Iyn, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+
+    cv2.imshow('Ix_Normalized', Ixn)
+    cv2.imshow('Iy_Normalized', Iyn)
+
+    return Ix, Iy
+
 # Remove floor
 def filterFloor(gauss):
-    floor = cv2.imread('course_proj/Floor.png')
-    floor = grayscale(floor)
+    floorless = gauss.copy()
 
-    floorless = cv2.filter2D(gauss, 0, floor)
+    # Get gradients, and orientation
+    Ix, Iy = sobel(gauss)
+    mag = np.sqrt(Ix*Ix + Iy*Iy)
+    orient = np.arctan2(Iy,Ix)
+    
+    # Attempt 1 - if the normal of the gradient is pointing vertically, remove it
+    floorless[((3*np.pi/8 < orient) & (orient < 5*np.pi/8)) | ((-5*np.pi/8 < orient) & (orient < -3*np.pi/8))] = 0
+
+    # Remove the left-over stripes
+    kernel = np.matrix([[1],
+                        [1]])
+    floorless = cv2.erode(floorless,kernel,iterations = 1)
 
     return floorless
 
@@ -42,7 +77,7 @@ def markObstaclesRed(img, gauss, edges, thresh):
     img = img.copy()
 
     # Shade regions close enough
-    img[np.where(gauss > thresh)] = [0,0,255]
+    img[gauss > thresh] = [0,0,255]
 
     # Fill in shaded regions according to edge image
     y, x, z = img.shape
@@ -82,7 +117,7 @@ def markObstaclesRed(img, gauss, edges, thresh):
     return img
 
 # Return 2D map of free space
-def get2DMap(filtered):
+def get2DMap(filtered, thresh):
     # Get max of columns
     max_vector = np.amax(filtered, axis=0)
 
@@ -91,7 +126,8 @@ def get2DMap(filtered):
 
     # Set max value along axis
     for i in range(0, filtered.shape[1]):
-       mp.itemset((max_vector[i],i), 255)
+        #if filtered[max_vector[i],i] > thresh:
+        mp.itemset((max_vector[i],i), 255)
 
     return mp
 
@@ -110,7 +146,7 @@ cv2.imshow('Original image', img)
 cv2.imwrite('course_proj/Originalimg.png', img)
 
 # Filter noise
-gauss = generalFilter(img_gray)
+gauss = generalFilter(img_gray, 1)
 cv2.imshow('Gaussian filtered image', gauss)
 cv2.imwrite('course_proj/Gaussianfilteredimg.png', gauss)
 
@@ -125,7 +161,7 @@ cv2.imshow('Removed Floor', filter_img)
 cv2.imwrite('course_proj/FilteredFloor.png', filter_img)
 
 # Create 2D map of obstacle-free space
-mp = get2DMap(filter_img)
+mp = get2DMap(filter_img, thresh)
 cv2.imshow('2D Map', mp)
 cv2.imwrite('course_proj/Map2D.png', mp)
 
