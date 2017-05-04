@@ -80,7 +80,7 @@ def filterFloor(gauss):
     # Attempt 2 - Calculate normal, if vertical, remove
     # Problem 1 - how to calculate normal?
     # Problem 2 - how to define the ground plane direction of normal
-    #              - Best to do with training 
+    #              - Best to do with training data
     # Problem 3 - how to generate sufficient training data?
     #              - Simply not feasable within the scope and 
     #                available resources of this project. 
