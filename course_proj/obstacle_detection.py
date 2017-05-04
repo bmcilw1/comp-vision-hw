@@ -137,7 +137,7 @@ def get2DMap(filtered, thresh):
 
 # MAIN
 ##################################################################
-img = cv2.imread('course_proj/images/KinectSnapshot-08-36-54.png')
+img = cv2.imread('course_proj/images/KinectSnapshot-08-38-04.png')
 
 # Threshold closeness to be considered as a potential obstacle
 thresh = 150
