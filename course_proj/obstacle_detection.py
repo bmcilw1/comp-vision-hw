@@ -40,9 +40,9 @@ def markObstaclesRed(img, gauss, edges, thresh):
         for j in range(1, y-1):
             if img[j,i,2] == 255:
                 if edges[j+1, i  ] < 1 and gauss[j+1, i  ] != 0:
-                    img.itemset((j+1, i  ,  0), 0)
-                    img.itemset((j+1, i  ,  1), 0)
-                    img.itemset((j+1, i  ,  2), 255)
+                    img.itemset((j+1, i  , 0), 0)
+                    img.itemset((j+1, i  , 1), 0)
+                    img.itemset((j+1, i  , 2), 255)
                 if edges[j  , i+1] < 1 and gauss[j  , i+1] != 0:
                     img.itemset((j  , i+1, 0), 0)
                     img.itemset((j  , i+1, 1), 0)
@@ -57,9 +57,9 @@ def markObstaclesRed(img, gauss, edges, thresh):
         for j in range(y-1, 1, -1):
             if img[j,i,2] == 255:
                 if edges[j-1, i  ] < 1 and gauss[j-1, i  ] != 0:
-                    img.itemset((j-1, i  ,  0), 0)
-                    img.itemset((j-1, i  ,  1), 0)
-                    img.itemset((j-1, i  ,  2), 255)
+                    img.itemset((j-1, i  , 0), 0)
+                    img.itemset((j-1, i  , 1), 0)
+                    img.itemset((j-1, i  , 2), 255)
                 if edges[j  , i-1] < 1 and gauss[j  , i-1] != 0:
                     img.itemset((j  , i-1, 0), 0)
                     img.itemset((j  , i-1, 1), 0)
